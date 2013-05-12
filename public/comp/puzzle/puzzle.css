@@ -1,0 +1,44 @@
+.puzzle {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  left: 20px;
+  top: 20px;
+}
+
+.puzzle__cont {
+  position: relative;
+}
+
+.puzzle__frame,
+.puzzle__curs {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.puzzle__curs {
+  position: relative;
+  background: gold;
+}
+
+.puzzle__curs:before,
+.puzzle__curs:after {
+  position: absolute;
+  background: inherit;
+  content: "";
+}
+
+.puzzle__curs:before {
+  top: 1px;
+  left: -25%;
+  bottom: 1px;
+  width: 150%;
+}
+
+.puzzle__curs:after {
+  top: -25%;
+  left: 1px;
+  right: 1px;
+  height: 150%;
+}

@@ -1,0 +1,53 @@
+.piece {
+  position: absolute;
+}
+
+.piece_waiting:before {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  margin: -2px 0 0 -9px;
+  height: 4px;
+  width: 18px;
+  content: "";
+  
+  background: no-repeat center;
+  background-image: url("img/waiting.png");
+
+  -webkit-animation: waiting 1.2s steps(6) infinite;
+     -moz-animation: waiting 1.2s steps(6) infinite;
+      -ms-animation: waiting 1.2s steps(6) infinite;
+       -o-animation: waiting 1.2s steps(6) infinite;
+          animation: waiting 1.2s steps(6) infinite;
+}
+
+@-webkit-keyframes waiting {
+  from { background-position: 0 0px; }
+  to   { background-position: 0 -24px; }
+}
+
+@-moz-keyframes waiting {
+  from { background-position: 0 0px; }
+  to   { background-position: 0 -24px; }
+}
+
+.piece__canvas,
+.piece__cover {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.piece__tooltip {
+  position: absolute;
+  text-align: center;
+}
+
+.piece__tooltip i {
+  padding: 0 10px;
+  background: gold;
+  font-style: normal;
+  white-space: nowrap;
+  border-radius: 10px;
+}

@@ -1,0 +1,22 @@
+[
+  "/js/libs/yepnope.js",
+  "/js/libs/socket.io.js",
+  "/js/libs/jquery.js",
+  "/js/libs/jquery.event.drag.js",
+  "/js/libs/jquery.transit.js",
+  "/js/libs/jquery.hammer.js",
+  "/js/libs/lodash.js",
+  "/js/libs/backbone.js",
+  "/js/libs/sprintf.js",
+
+  "/js/ns.js",
+  "/js/utils.js",
+  "/js/models/user.js",
+  "/comp/puzzle/puzzle.js",
+  "/comp/puzzle/frame.js",
+  "/comp/puzzle/piece.js",
+  "/js/loader.js",
+  "/js/socket.js",
+  "/js/game.js",
+  "/js/app.js"
+]

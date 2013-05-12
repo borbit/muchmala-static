@@ -1,0 +1,15 @@
+{
+  "name": "muchmala-static",
+  "version": "0.0.1",
+  "description": "Muchmala static server",
+  "contributors": [
+    "Serge Borbit <serge.borbit@gmail.com>"
+  ],
+  "dependencies": {
+    "ejs": "*",
+    "consolidate": "*",
+    "express": "*",
+    "lodash": "*",
+    "async": "*"
+  }
+}

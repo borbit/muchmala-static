@@ -1,0 +1,12 @@
+<# js.forEach(function(src) { -#>
+<script src="<#=(staticUrl + src)#>"></script>
+<# }); -#>
+<# if (gaKey) { -#>
+<script>
+  var _gaq = [
+    ['_setAccount', '<#= gaKey #>'],
+    ['_trackPageview']
+  ];
+  yepnope('http://www.google-analytics.com/ga.js');
+</script>
+<# } -#>
