@@ -14,10 +14,9 @@
     this.r = op.r;
     
     this.covers = op.covers;
-    this.sprite = op.sprite;
+    this.sprites = op.sprites;
     this.pieceSize = op.pieceSize;
     this.spriteSize = op.spriteSize;
-    this.timer = null;
 
     var tileSize = Piece.calcTileSize(this.pieceSize);
     this.cx = this.x * (tileSize + 1);
@@ -52,12 +51,16 @@
   };
 
   Proto.draw = function() {
+    var spriteX = ~~(this.rx / this.spriteSize);
+    var spriteY = ~~(this.ry / this.spriteSize);
+    var sprite = this.sprites[spriteX][spriteY];
+
     var sx = this.rx % this.spriteSize * this.pieceSize;
     var sy = this.ry % this.spriteSize * this.pieceSize;
     var ctx = this.canvas.getContext('2d');
 
     ctx.clearRect(0, 0, this.pieceSize, this.pieceSize);
-    ctx.drawImage(this.sprite, sx, sy, this.pieceSize,
+    ctx.drawImage(sprite, sx, sy, this.pieceSize,
       this.pieceSize, 0, 0, this.pieceSize, this.pieceSize);
   };
 
@@ -89,6 +92,7 @@
   };
 
   Proto.removeTooltip = function() {
+    if (!this.tooltip) return;
     this.el.parentNode.removeChild(this.tooltip);
     this.tooltip = null;
   };
@@ -202,23 +206,14 @@
     this.waiting = false;
   };
 
-  Proto.setSelected = function(data) {
+  Proto.setSelected = function() {
     if (this.waiting) return;
     this.showSelCover();
     this.selected = true;
-    
-    var self = this;
-    this.timer = setTimeout(function() {
-      self.timer = null;
-      self.unsetSelected();
-    }, data.ttl);
   };
 
   Proto.unsetSelected = function() {
     if (this.waiting) return;
-    if (this.timer) {
-      clearTimeout(this.timer);
-    }
     this.updateCover();
     this.selected = false;
   };

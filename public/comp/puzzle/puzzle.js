@@ -6,6 +6,7 @@
     
     this.data = {};
     this.pieces = {};
+    this.timers = {};
     this.spritesImgs = {};
     this.coversImgs = null;
     this.selected = null;
@@ -33,6 +34,7 @@
   Proto.init = function(data) {
     var self = this;
 
+    this.clear();
     this.loader.on('sprite', function(sx, sy, sprite) {
       self.spritesImgs[sx] || (self.spritesImgs[sx] = {});
       self.spritesImgs[sx][sy] = sprite;
@@ -70,16 +72,13 @@
     var self = this;
 
     _.each(this.data.pieces, function(val, i) {
-      var x = ~~(i % self.data.lenHor);
-      var y = ~~(i / self.data.lenHor);
-      var org = ns.Comp.Piece.origin(val);
-      var rx = ~~(org % self.data.lenHor);
-      var ry = ~~(org / self.data.lenHor);
-      var piece = self.pieces[x][y];
+      var c = self.getPieceCoords(i);
+      var rc = self.getPieceRCoords(val);
+      var piece = self.pieces[c.x][c.y];
 
-      if (piece.rx != rx || piece.ry != ry) {
-        piece.rx = rx;
-        piece.ry = ry;
+      if (piece.rx != rc.x || piece.ry != rc.y) {
+        piece.rx = rc.x;
+        piece.ry = rc.y;
         piece.update();
       }
 
@@ -181,30 +180,45 @@
     this.$cont.bind('click', function(e) {
       var piece = self.findPiece(e.clientX, e.clientY);
 
+      if (!piece || !piece.isActive()) return;
       if (self.selected && self.selected !== piece) {
         if (self.selected.shapeKey() == piece.shapeKey()) {
-          self.selected.setWaiting();
+          var selec = self.selected;
+          var piece1Index = selec.index;
+          var piece2Index = piece.index;
+
+          selec.setWaiting();
           piece.setWaiting();
+
+          self.game.swapPieces(self.data.id, piece1Index, piece2Index, function(data) {
+            self.swapPieces(data.pieces);
+            self.selected = null;
+          });
         }
       }
-      else if (piece && !piece.isBlocked() && !piece.isSelected()) {
+      else if (!piece.isBlocked() && !piece.isSelected()) {
         piece.setWaiting();
-
         self.game.selectPiece(self.data.id, piece.index, function(data) {
-          piece.unsetWaiting();
-          piece.setSelected(data);
-          self.selected = piece;
+          self.selectPiece(piece, data);
         });
       }
-      else if (piece && piece.isSelected()) {
+      else if (piece.isSelected()) {
         piece.setWaiting();
-
         self.game.releasePiece(self.data.id, piece.index, function() {
-          piece.unsetWaiting();
-          piece.unsetSelected();
-          self.selected = null;
+          self.releasePiece(piece);
         });
       }
+    });
+
+    this.$cont.bind('contextmenu', function(e) {
+      if (self.selected) {
+        self.selected.setWaiting();
+        self.game.releasePiece(self.data.id, self.selected.index, function() {
+          self.releasePiece(self.selected);
+        });
+      }
+      e.preventDefault();
+      return false;
     });
 
     $(window).resize(function() {
@@ -217,7 +231,6 @@
 
     this.game.on('puzzle', function(data) {
       if (self.data.id != data.id) {
-        self.clear();
         self.init(data);
       } else {
         self.update(data);
@@ -225,20 +238,45 @@
     });
 
     this.game.on('select', function(data) {
-      var x = ~~(data.pieceIndex % self.data.lenHor);
-      var y = ~~(data.pieceIndex / self.data.lenHor);
-      self.pieces[x][y].setBlocked(data);
+      var c = self.getPieceCoords(data.pieceIndex);
+      self.pieces[c.x][c.y].setBlocked(data);
     });
 
     this.game.on('release', function(data) {
-      var x = ~~(data.pieceIndex % self.data.lenHor);
-      var y = ~~(data.pieceIndex / self.data.lenHor);
-      self.pieces[x][y].unsetBlocked();
+      var c = self.getPieceCoords(data.pieceIndex);
+      self.pieces[c.x][c.y].unsetBlocked();
+    });
+
+    this.game.on('swap', function(data) {
+      self.swapPieces(data.pieces);
     });
   };
 
 
   Proto.clear = function() {
+  };
+
+  Proto.selectPiece = function(piece, data) {
+    piece.unsetWaiting();
+    piece.setSelected(data);
+    this.selected = piece;
+
+    var self = this;
+    this.timers[piece.x] || (this.timers[piece.x] = {});
+    this.timers[piece.x][piece.y] = setTimeout(function() {
+      self.timers[piece.x][piece.y] = null;
+      self.releasePiece(piece);
+    }, data.ttl);
+  };
+
+  Proto.releasePiece = function(piece) {
+    if (this.timers[piece.x] &&
+        this.timers[piece.x][piece.y]) {
+      clearTimeout(this.timers[piece.x][piece.y]);
+    }
+    piece.unsetWaiting();
+    piece.unsetSelected();
+    this.selected = null;
   };
 
   Proto.findPiece = function(ex, ey) {
@@ -271,18 +309,15 @@
     var frag = document.createDocumentFragment()
 
     _.each(this.data.pieces, function(val, i) {
-      var org = ns.Comp.Piece.origin(val);
-      var rx = ~~(org % self.data.lenHor);
-      var ry = ~~(org / self.data.lenHor);
+      var rc = self.getPieceRCoords(val);
 
-      if (rx >= x1 && rx < x2 &&
-          ry >= y1 && ry < y2) {
+      if (rc.x >= x1 && rc.x < x2 &&
+          rc.y >= y1 && rc.y < y2) {
 
-        var x = ~~(i % self.data.lenHor);
-        var y = ~~(i / self.data.lenHor);
+        var c = self.getPieceCoords(i);
         var piece = new ns.Comp.Piece({
-          x: x, y: y
-        , rx: rx, ry: ry
+          x: c.x, y: c.y
+        , rx: rc.x, ry: rc.y
         , t: ns.Comp.Piece.earT(val)
         , b: ns.Comp.Piece.earB(val)
         , l: ns.Comp.Piece.earL(val)
@@ -291,17 +326,54 @@
 
         , pieceSize: self.data.pieceSize
         , spriteSize: self.data.spriteSize
-        , sprite: self.spritesImgs[sx][sy]
+        , sprites: self.spritesImgs
         , covers: self.coversImgs
         });
 
-        self.pieces[x] || (self.pieces[x] = {});
-        self.pieces[x][y] = piece;
+        self.pieces[c.x] || (self.pieces[c.x] = {});
+        self.pieces[c.x][c.y] = piece;
         frag.appendChild(piece.el);
       }
     });
 
     this.$cont.append(frag);
+  };
+
+  Proto.swapPieces = function(pieces) {
+    var self = this;
+    _.each(pieces, function(val, i) {
+      var c = self.getPieceCoords(i);
+      var rc = self.getPieceRCoords(val);
+      var piece = self.pieces[c.x][c.y];
+
+      piece.rx = rc.x;
+      piece.ry = rc.y;
+
+      if (self.timers[piece.x] && 
+          self.timers[piece.x][piece.y]) {
+        clearTimeout(self.timers[piece.x][piece.y]);
+      }
+    
+      piece.unsetWaiting();
+      piece.unsetSelected();
+      piece.unsetBlocked();
+      piece.update();
+    });
+  };
+
+  Proto.getPieceCoords = function(index) {
+    return {
+      x: ~~(index % this.data.lenHor)
+    , y: ~~(index / this.data.lenHor)
+    };
+  };
+
+  Proto.getPieceRCoords = function(val) {
+    var org = ns.Comp.Piece.origin(val);
+    return {
+      x: ~~(org % this.data.lenHor)
+    , y: ~~(org / this.data.lenHor)
+    };
   };
 
   Proto.renderFrame = function() {

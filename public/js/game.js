@@ -1,20 +1,32 @@
 (function() {
   function Game(options) {
-    this.socket = options.socket;
     this.user = options.user;
+    this.host = options.host;
+    this.socket = null;
   }
 
   var Proto = _.extend(Game.prototype, Backbone.Events);
 
   Proto.connect = function(cb) {
-    this.socket.once('connect', cb);
-    this.socket.connect(); 
-
-    this.listenTo(this.socket, 'select', function(data) {
-      this.trigger('select', data);
+    this.socket = io.connect(this.host, {
+      'max reconnection attempts' : 20
+    , 'reconnection delay'        : 1000
+    , 'reconnection limit'        : 1000
     });
-    this.listenTo(this.socket, 'release', function(data) {
-      this.trigger('release', data);
+
+    this.socket.on('reconnecting', function(d, attempt) {
+      if (attempt == 20) self.trigger('reconnect_failed');
+    });
+    var self = this;
+    this.socket.on('connect', cb);
+    this.socket.on('select', function(data) {
+      self.trigger('select', data);
+    });
+    this.socket.on('release', function(data) {
+      self.trigger('release', data);
+    });
+    this.socket.on('swap', function(data) {
+      self.trigger('swap', data);
     });
   };
 
@@ -29,7 +41,7 @@
       auth.signHash = hash;
     }
 
-    this.socket.user(auth, function(res) {
+    this.socket.emit('user', {user: auth}, function(res) {
       if (res.error) {
         return self.triggerError(res.error);
       }
@@ -42,7 +54,7 @@
     var self = this;
     var auth = this.getAuthData();
 
-    this.socket.puzzle(null, auth, function(res) {
+    this.socket.emit('puzzle', {user: auth}, function(res) {
       if (res.error) {
         return self.triggerError(res.error);
       }
@@ -51,11 +63,15 @@
     });
   };
 
-  Proto.getPuzzle = function(id, cb) {
+  Proto.getPuzzle = function(puzzleId, cb) {
     var self = this;
     var auth = this.getAuthData();
+    var payload = {
+      puzzleId: puzzleId
+    , user: auth
+    };
 
-    this.socket.puzzle(id, auth, function(res) {
+    this.socket.emit('puzzle', payload, function(res) {
       if (res.error) {
         return self.triggerError(res.error);
       }
@@ -67,8 +83,13 @@
   Proto.selectPiece = function(puzzleId, pieceIndex, cb) {
     var self = this;
     var auth = this.getAuthData();
+    var payload = {
+      pieceIndex: pieceIndex
+    , puzzleId: puzzleId
+    , user: auth
+    };
 
-    this.socket.select(puzzleId, pieceIndex, auth, function(res) {
+    this.socket.emit('select', payload, function(res) {
       if (res.error) {
         return self.triggerError(res.error);
       }
@@ -79,12 +100,35 @@
   Proto.releasePiece = function(puzzleId, pieceIndex, cb) {
     var self = this;
     var auth = this.getAuthData();
+    var payload = {
+      pieceIndex: pieceIndex
+    , puzzleId: puzzleId
+    , user: auth
+    };
 
-    this.socket.release(puzzleId, pieceIndex, auth, function(res) {
+    this.socket.emit('release', payload, function(res) {
       if (res.error) {
         return self.triggerError(res.error);
       }
       cb && cb();
+    });
+  };
+
+  Proto.swapPieces = function(puzzleId, piece1Index, piece2Index, cb) {
+    var self = this;
+    var auth = this.getAuthData();
+    var payload = {
+      piece1Index: piece1Index
+    , piece2Index: piece2Index
+    , puzzleId: puzzleId
+    , user: auth
+    };
+
+    this.socket.emit('swap', payload, function(res) {
+      if (res.error) {
+        return self.triggerError(res.error);
+      }
+      cb && cb(res);
     });
   };
 

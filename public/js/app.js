@@ -3,10 +3,9 @@
 Hammer.NO_MOUSEEVENTS = true;
 
 (function() {
-  var socket = new ns.Socket(IO_URL);
   var user = new ns.Models.User();
   var game = new ns.Game({
-    socket: socket
+    host: IO_URL
   , user: user
   });
 

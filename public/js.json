@@ -16,7 +16,6 @@
   "/comp/puzzle/frame.js",
   "/comp/puzzle/piece.js",
   "/js/loader.js",
-  "/js/socket.js",
   "/js/game.js",
   "/js/app.js"
 ]
