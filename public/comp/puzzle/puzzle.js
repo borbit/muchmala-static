@@ -81,14 +81,16 @@
         piece.ry = rc.y;
         piece.update();
       }
+      
+      piece.clear();
 
       var selData = self.data.selected[i];
 
       if (selData) {
         if (selData.my) {
-          piece.setSelected(selData);
+          self.selectPiece(piece, selData);
         } else {
-          piece.setBlocked(selData);
+          self.blockPiece(piece, selData);
         }
       }
     });
@@ -239,12 +241,12 @@
 
     this.game.on('select', function(data) {
       var c = self.getPieceCoords(data.pieceIndex);
-      self.pieces[c.x][c.y].setBlocked(data);
+      self.blockPiece(self.pieces[c.x][c.y], data);
     });
 
     this.game.on('release', function(data) {
       var c = self.getPieceCoords(data.pieceIndex);
-      self.pieces[c.x][c.y].unsetBlocked();
+      self.unblockPiece(self.pieces[c.x][c.y]);
     });
 
     this.game.on('swap', function(data) {
@@ -270,13 +272,34 @@
   };
 
   Proto.releasePiece = function(piece) {
-    if (this.timers[piece.x] &&
-        this.timers[piece.x][piece.y]) {
+    if (this.timers[piece.x] && this.timers[piece.x][piece.y]) {
       clearTimeout(this.timers[piece.x][piece.y]);
+      delete this.timers[piece.x][piece.y];
     }
     piece.unsetWaiting();
     piece.unsetSelected();
     this.selected = null;
+  };
+
+  Proto.blockPiece = function(piece, data) {
+    piece.unsetWaiting();
+    piece.setBlocked(data);
+
+    var self = this;
+    this.timers[piece.x] || (this.timers[piece.x] = {});
+    this.timers[piece.x][piece.y] = setTimeout(function() {
+      self.timers[piece.x][piece.y] = null;
+      self.unblockPiece(piece);
+    }, data.ttl);
+  };
+
+  Proto.unblockPiece = function(piece) {
+    if (this.timers[piece.x] && this.timers[piece.x][piece.y]) {
+      clearTimeout(this.timers[piece.x][piece.y]);
+      delete this.timers[piece.x][piece.y];
+    }
+    piece.unsetWaiting();
+    piece.unsetBlocked();
   };
 
   Proto.findPiece = function(ex, ey) {
@@ -349,15 +372,13 @@
       piece.rx = rc.x;
       piece.ry = rc.y;
 
-      if (self.timers[piece.x] && 
-          self.timers[piece.x][piece.y]) {
+      if (self.timers[piece.x] && self.timers[piece.x][piece.y]) {
         clearTimeout(self.timers[piece.x][piece.y]);
+        delete self.timers[piece.x][piece.y];
       }
     
-      piece.unsetWaiting();
-      piece.unsetSelected();
-      piece.unsetBlocked();
       piece.update();
+      piece.clear();
     });
   };
 

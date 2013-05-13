@@ -223,22 +223,18 @@
     this.showLocCover();
     this.showTooltip(data.userName || 'anonymous');
     this.blocked = true;
-
-    var self = this;
-    this.timer = setTimeout(function() {
-      self.timer = null;
-      self.unsetBlocked();
-    }, data.ttl);
   };
 
   Proto.unsetBlocked = function() {
-    if (this.waiting) return;
-    if (this.timer) {
-      clearTimeout(this.timer);
-    }
     this.updateCover();
     this.removeTooltip();
     this.blocked = false;
+  };
+
+  Proto.clear = function() {
+    this.unsetWaiting();
+    this.unsetSelected();
+    this.unsetBlocked();
   };
 
   Piece.calcStepSize = function(pieceSize) {
