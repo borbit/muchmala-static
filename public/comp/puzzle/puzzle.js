@@ -19,6 +19,7 @@
     this.$curs = $('.puzzle__curs');
     this.$cont.hammer();
 
+    this.waiting = false;
     this.contDeltaX = 0;
     this.contDeltaY = 0;
     this.contMoved = false;
@@ -26,7 +27,6 @@
     this.stepSize = null;
 
     this.enableGameEvents();
-    this.enableDOMEvents();
   }
 
   var Proto = Puzzle.prototype;
@@ -49,9 +49,11 @@
       self.loader.loadSprites(data);
       self.coversImgs = covers;
     });
+
     this.loader.on('frame', function(frame) {
       self.frame = new ns.Comp.Frame({body: self.$cont, image: frame});
       self.game.getPuzzle(self.data.id);
+      self.enableDOMEvents();
       self.renderFrame();
     });
 
@@ -67,11 +69,10 @@
   };
 
   Proto.update = function(data) {
-    this.data = data;
-
     var self = this;
 
-    _.each(this.data.pieces, function(val, i) {
+    this.data = data;
+    this.data.pieces.forEach(function(val, i) {
       var c = self.getPieceCoords(i);
       var rc = self.getPieceRCoords(val);
       var piece = self.pieces[c.x][c.y];
@@ -172,6 +173,7 @@
       var piece = self.findPiece(e.clientX, e.clientY);
 
       if (piece && piece.isActive()) {
+        self.$curs.show();
         self.$curs.css({
           x: piece.x * (self.tileSize + 1) + self.stepSize - 1
         , y: piece.y * (self.tileSize + 1) + self.stepSize - 1
@@ -182,7 +184,9 @@
     this.$cont.bind('click', function(e) {
       var piece = self.findPiece(e.clientX, e.clientY);
 
-      if (!piece || !piece.isActive()) return;
+      if (!piece || !piece.isActive() || piece.isBlocked() || self.waiting)
+        return;
+
       if (self.selected && self.selected !== piece) {
         if (self.selected.shapeKey() == piece.shapeKey()) {
           var selec = self.selected;
@@ -192,22 +196,30 @@
           selec.setWaiting();
           piece.setWaiting();
 
+          self.waiting = true;
           self.game.swapPieces(self.data.id, piece1Index, piece2Index, function(data) {
             self.swapPieces(data.pieces);
             self.selected = null;
+            self.waiting = false;
           });
         }
       }
-      else if (!piece.isBlocked() && !piece.isSelected()) {
+      else if (!piece.isSelected()) {
         piece.setWaiting();
+        
+        self.waiting = true;
         self.game.selectPiece(self.data.id, piece.index, function(data) {
           self.selectPiece(piece, data);
+          self.waiting = false;
         });
       }
       else if (piece.isSelected()) {
         piece.setWaiting();
+        
+        self.waiting = true;
         self.game.releasePiece(self.data.id, piece.index, function() {
           self.releasePiece(piece);
+          self.waiting = false;
         });
       }
     });
@@ -215,8 +227,11 @@
     this.$cont.bind('contextmenu', function(e) {
       if (self.selected) {
         self.selected.setWaiting();
+
+        self.waiting = true;
         self.game.releasePiece(self.data.id, self.selected.index, function() {
           self.releasePiece(self.selected);
+          self.waiting = false;
         });
       }
       e.preventDefault();
