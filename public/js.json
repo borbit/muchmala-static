@@ -1,5 +1,4 @@
 [
-  "/js/libs/yepnope.js",
   "/js/libs/socket.io.js",
   "/js/libs/jquery.js",
   "/js/libs/jquery.event.drag.js",

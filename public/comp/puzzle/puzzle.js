@@ -172,12 +172,17 @@
     this.$cont.bind('mousemove', function(e) {
       var piece = self.findPiece(e.clientX, e.clientY);
 
-      if (piece && piece.isActive()) {
+      if (!piece) return;
+      if (piece.isActive()) {
+        self.$cont.css('cursor', 'pointer');
         self.$curs.show();
         self.$curs.css({
           x: piece.x * (self.tileSize + 1) + self.stepSize - 1
         , y: piece.y * (self.tileSize + 1) + self.stepSize - 1
         });
+      }
+      if (piece.isBlocked() || !piece.isActive()) {
+        self.$cont.css('cursor', 'default');
       }
     });
 
