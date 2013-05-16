@@ -398,7 +398,7 @@
 
   Proto.swapPieces = function(pieces) {
     var self = this;
-    _.each(pieces, function(val, i) {
+    var swapped = _.map(pieces, function(val, i) {
       var c = self.getPieceCoords(i);
       var rc = self.getPieceRCoords(val);
       var piece = self.pieces[c.x][c.y];
@@ -410,9 +410,13 @@
         clearTimeout(self.timers[piece.x][piece.y]);
         delete self.timers[piece.x][piece.y];
       }
-    
       piece.update();
       piece.clear();
+      return piece;
+    });
+    // pulse swapped pieces
+    _.each(swapped, function(piece) {
+      self.pulseCursor(piece.x, piece.y, 'blue');
     });
   };
 
