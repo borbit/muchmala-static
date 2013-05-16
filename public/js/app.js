@@ -1,6 +1,8 @@
 // some bootstrap
 // make hammer.js not to handle mouse events
 Hammer.NO_MOUSEEVENTS = true;
+// make all the animation to be linear by default
+$.cssEase._default = 'linear';
 
 (function() {
   var user = new ns.Models.User();

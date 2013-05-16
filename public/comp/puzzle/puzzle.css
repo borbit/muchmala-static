@@ -18,8 +18,9 @@
 }
 
 .puzzle__curs {
+  z-index: -1;
   display: none;
-  position: relative;
+  position: absolute;
   background: gold;
 }
 

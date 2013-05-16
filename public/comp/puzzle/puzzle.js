@@ -16,7 +16,7 @@
     
     this.$view = $('.puzzle');
     this.$cont = $('.puzzle__cont');
-    this.$curs = $('.puzzle__curs');
+    this.$curs = this.addCurs();
     this.$cont.hammer();
 
     this.waiting = false;
@@ -63,7 +63,7 @@
     this.tileSize = ns.Comp.Piece.calcTileSize(data.pieceSize);
     this.stepSize = ns.Comp.Piece.calcStepSize(data.pieceSize);
 
-    this.arrangeCursSize();
+    this.arrangeCursSize(this.$curs);
     this.arrangeContSize();
     this.arrangeContPos();
   };
@@ -97,10 +97,24 @@
     });
   };
 
-  Proto.arrangeCursSize = function() {
-    this.$curs.css({
+  Proto.addCurs = function() {
+    var curs = document.createElement('div');
+    curs.classList.add('puzzle__curs');
+    this.$cont.append(curs);
+    return $(curs);
+  };
+
+  Proto.arrangeCursSize = function($curs) {
+    $curs.css({
       height : this.tileSize + 2
     , width  : this.tileSize + 2
+    });
+  };
+
+  Proto.arrangeCursPos = function($curs, x, y) {
+    $curs.css({
+      x: x * (this.tileSize + 1) + this.stepSize - 1
+    , y: y * (this.tileSize + 1) + this.stepSize - 1
     });
   };
 
@@ -142,7 +156,7 @@
     };
 
     if (animate) {
-      this.$cont.transit(coords);
+      this.$cont.transit(coords, 200, 'ease-in-out');
     } else {
       this.$cont.css(coords);
     }
@@ -174,15 +188,13 @@
 
       if (!piece) return;
       if (piece.isActive()) {
+        self.arrangeCursPos(self.$curs, piece.x, piece.y);
         self.$cont.css('cursor', 'pointer');
         self.$curs.show();
-        self.$curs.css({
-          x: piece.x * (self.tileSize + 1) + self.stepSize - 1
-        , y: piece.y * (self.tileSize + 1) + self.stepSize - 1
-        });
       }
       if (piece.isBlocked() || !piece.isActive()) {
         self.$cont.css('cursor', 'default');
+        self.$curs.hide();
       }
     });
 
@@ -207,6 +219,8 @@
             self.selected = null;
             self.waiting = false;
           });
+        } else {
+          self.pulseCursor(piece.x, piece.y, 'red');
         }
       }
       else if (!piece.isSelected()) {
@@ -425,6 +439,22 @@
     , lenVer: this.data.lenVer
     , pieces: this.pieces
     });
+  };
+
+  Proto.pulseCursor = function(x, y, color) {
+    var $curs = this.addCurs();
+    this.arrangeCursPos($curs, x, y);
+    this.arrangeCursSize($curs);
+    
+    $curs.css('background', color);
+    $curs.appendTo(this.$cont);
+    
+    $curs.show();
+    $curs.transit({opacity: 0}, 120);
+    $curs.transit({opacity: 1}, 120);
+    $curs.transit({opacity: 0}, 120, function() {
+      $curs.remove();
+    })
   };
 
   ns.Comp.Puzzle = Puzzle;
