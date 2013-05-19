@@ -20,9 +20,8 @@
     this.$cont.hammer();
 
     this.waiting = false;
-    this.contDeltaX = 0;
-    this.contDeltaY = 0;
     this.contMoved = false;
+    this.contDelta = {x: 0, y: 0};
     this.tileSize = null;
     this.stepSize = null;
 
@@ -124,57 +123,52 @@
     });
   };
 
-  Proto.arrangeContPos = function(animate) {
-    var viewW = this.$view.width();
-    var viewH = this.$view.height();
-    var contW = this.$cont.outerWidth();
-    var contH = this.$cont.outerHeight();
+  Proto.arrangeContDelta = function(delta) {
+    if (!this.contMoved || this.viewW > this.contW) {
+      delta.x = ~~((this.viewW - this.contW) / 2);
+    }
+    if (!this.contMoved || this.viewH > this.contH) {
+      delta.y = ~~((this.viewH - this.contH) / 2);
+    }
+    if (delta.x < 0 && delta.x + this.contW < this.viewW) {
+      delta.x = this.viewW - this.contW;
+    }
+    if (delta.x > 0 && delta.x + this.contW > this.viewW) {
+      delta.x = 0;
+    }
+    if (delta.y < 0 && delta.y + this.contH < this.viewH) {
+      delta.y = this.viewH - this.contH;
+    }
+    if (delta.y > 0 && delta.y + this.contH > this.viewH) {
+      delta.y = 0;
+    }
+    return delta;
+  };
 
-    if (!this.contMoved || viewW > contW) {
-      this.contDeltaX = (viewW - contW) / 2;
-    }
-    if (!this.contMoved || viewH > contH) {
-      this.contDeltaY = (viewH - contH) / 2;
-    }
-    if (this.contDeltaX < 0 && this.contDeltaX + contW < viewW) {
-      this.contDeltaX = viewW - contW;
-    }
-    if (this.contDeltaX > 0 && this.contDeltaX + contW > viewW) {
-      this.contDeltaX = 0;
-    }
-    if (this.contDeltaY < 0 && this.contDeltaY + contH < viewH) {
-      this.contDeltaY = viewH - contH;
-    }
-    if (this.contDeltaY > 0 && this.contDeltaY + contH > viewH) {
-      this.contDeltaY = 0;
-    }
-
-    var coords = {
-      x: ~~(this.contDeltaX)
-    , y: ~~(this.contDeltaY)
-    };
-
-    if (animate) {
-      this.$cont.transit(coords, 100, 'ease-in-out');
-    } else {
-      this.$cont.css(coords);
-    }
+  Proto.arrangeContPos = function() {
+    this.viewW = this.$view.width();
+    this.viewH = this.$view.height();
+    this.contW = this.$cont.outerWidth();
+    this.contH = this.$cont.outerHeight();
+    this.contDelta = this.arrangeContDelta(this.contDelta);
+    this.$cont.css(this.contDelta);
   };
 
   Proto.enableDOMEvents = function() {
     var self = this;
     this.$cont.bind('drag', function(e, dd) {
       self.contMoved = true;
-      self.$cont.css({
-        x: ~~(self.contDeltaX + dd.deltaX)
-      , y: ~~(self.contDeltaY + dd.deltaY)
-      });
+      self.$cont.css(self.arrangeContDelta({
+        x: ~~(self.contDelta.x + dd.deltaX)
+      , y: ~~(self.contDelta.y + dd.deltaY)
+      }));
     });
 
     this.$cont.bind('dragend', function(e, dd) {
-      self.contDeltaX += dd.deltaX;
-      self.contDeltaY += dd.deltaY;
-      self.arrangeContPos(true);
+      self.contDelta = self.arrangeContDelta({
+        x: ~~(self.contDelta.x + dd.deltaX)
+      , y: ~~(self.contDelta.y + dd.deltaY)
+      });
     });
 
     this.$cont.bind('mousemove', function(e) {
