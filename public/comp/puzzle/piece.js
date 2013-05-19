@@ -231,22 +231,34 @@
     if (this.waiting) return;
     this.showSelCover();
     this.selected = true;
+    this.cursor = this.addCursor();
   };
 
   Proto.unsetSelected = function() {
     if (this.waiting) return;
+    if (this.cursor) {
+      this.cursor.remove();
+      this.cursor = null;
+    }
     this.updateCover();
     this.selected = false;
   };
 
   Proto.setBlocked = function(data) {
     if (this.waiting) return;
+    if (data.userName) {
+      this.showTooltip(data.userName)
+    }
     this.showLocCover();
-    data.userName && this.showTooltip(data.userName);
     this.blocked = true;
+    this.cursor = this.addCursor();
   };
 
   Proto.unsetBlocked = function() {
+    if (this.cursor) {
+      this.cursor.remove();
+      this.cursor = null;
+    }
     this.updateCover();
     this.removeTooltip();
     this.blocked = false;
@@ -258,15 +270,20 @@
     this.unsetBlocked();
   };
 
-  Proto.pulse = function(color) {
+  Proto.addCursor = function(color) {
     var cursor = new ns.Comp.Cursor({
-      color: 'red'
+      color: color
     , tileSize: this.tileSize
     , stepSize: this.stepSize
     , body: this.el.parentNode
     });
     cursor.show();
     cursor.move(this.x, this.y);
+    return cursor;
+  };
+
+  Proto.pulse = function() {
+    var cursor = this.addCursor('red');
     cursor.pulse(function() {
       cursor.remove();
     });
