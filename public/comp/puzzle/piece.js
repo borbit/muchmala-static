@@ -18,9 +18,11 @@
     this.pieceSize = op.pieceSize;
     this.spriteSize = op.spriteSize;
 
-    var tileSize = Piece.calcTileSize(this.pieceSize);
-    this.cx = this.x * (tileSize + 1);
-    this.cy = this.y * (tileSize + 1);
+    this.tileSize = Piece.calcTileSize(this.pieceSize);
+    this.stepSize = Piece.calcStepSize(this.pieceSize);
+
+    this.cx = this.x * (this.tileSize + 1);
+    this.cy = this.y * (this.tileSize + 1);
 
     // flags
     this.waiting = false;
@@ -183,7 +185,7 @@
   };
 
   Proto.hasPoint = function(ex, ey) {
-    var s = Piece.calcStepSize(this.pieceSize);
+    var s = this.stepSize;
     var x = this.cx;
     var y = this.cy;
 
@@ -254,6 +256,20 @@
     this.unsetWaiting();
     this.unsetSelected();
     this.unsetBlocked();
+  };
+
+  Proto.pulse = function(color) {
+    var cursor = new ns.Comp.Cursor({
+      color: 'red'
+    , tileSize: this.tileSize
+    , stepSize: this.stepSize
+    , body: this.el.parentNode
+    });
+    cursor.show();
+    cursor.move(this.x, this.y);
+    cursor.pulse(function() {
+      cursor.remove();
+    });
   };
 
   Piece.calcStepSize = function(pieceSize) {

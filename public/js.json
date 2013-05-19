@@ -13,6 +13,7 @@
   "/js/models/user.js",
   "/comp/dialog/dialog.js",
   "/comp/puzzle/puzzle.js",
+  "/comp/puzzle/cursor.js",
   "/comp/puzzle/frame.js",
   "/comp/puzzle/piece.js",
   "/comp/panel/panel.js",

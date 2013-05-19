@@ -13,10 +13,9 @@
     this.frame = null
 
     this.loader = new ns.Loader(STATIC_URL);
-    
+
     this.$view = $('.puzzle');
     this.$cont = $('.puzzle__cont');
-    this.$curs = this.addCurs();
     this.$cont.hammer();
 
     this.waiting = false;
@@ -24,6 +23,7 @@
     this.contDelta = {x: 0, y: 0};
     this.tileSize = null;
     this.stepSize = null;
+    this.cursor = null;
 
     this.enableGameEvents();
   }
@@ -61,8 +61,12 @@
     
     this.tileSize = ns.Comp.Piece.calcTileSize(data.pieceSize);
     this.stepSize = ns.Comp.Piece.calcStepSize(data.pieceSize);
+    this.cursor = new ns.Comp.Cursor({
+      tileSize: this.tileSize
+    , stepSize: this.stepSize
+    , body: this.$cont
+    });
 
-    this.arrangeCursSize(this.$curs);
     this.arrangeContSize();
     this.arrangeContPos();
   };
@@ -93,26 +97,6 @@
           self.blockPiece(piece, selData);
         }
       }
-    });
-  };
-
-  Proto.addCurs = function() {
-    var $curs = $('<div class="puzzle__curs"></div>')
-    this.$cont.append($curs);
-    return $curs;
-  };
-
-  Proto.arrangeCursSize = function($curs) {
-    $curs.css({
-      height : this.tileSize + 2
-    , width  : this.tileSize + 2
-    });
-  };
-
-  Proto.arrangeCursPos = function($curs, x, y) {
-    $curs.css({
-      x: x * (this.tileSize + 1) + this.stepSize - 1
-    , y: y * (this.tileSize + 1) + this.stepSize - 1
     });
   };
 
@@ -176,13 +160,13 @@
 
       if (!piece) return;
       if (piece.isActive()) {
-        self.arrangeCursPos(self.$curs, piece.x, piece.y);
         self.$cont.css('cursor', 'pointer');
-        self.$curs.show();
+        self.cursor.move(piece.x, piece.y);
+        self.cursor.show();
       }
       if (piece.isBlocked() || !piece.isActive()) {
         self.$cont.css('cursor', 'default');
-        self.$curs.hide();
+        self.cursor.hide();
       }
     });
 
@@ -209,7 +193,7 @@
             self.waiting = false;
           });
         } else {
-          self.pulseCursor(piece.x, piece.y, 'red');
+          piece.pulse();
         }
       }
       else if (!piece.isSelected()) {
@@ -435,22 +419,6 @@
     , lenVer: this.data.lenVer
     , pieces: this.pieces
     });
-  };
-
-  Proto.pulseCursor = function(x, y, color) {
-    var $curs = this.addCurs();
-    this.arrangeCursPos($curs, x, y);
-    this.arrangeCursSize($curs);
-    
-    $curs.css('background', color);
-    $curs.appendTo(this.$cont);
-      
-    $curs.show();
-    $curs.transit({opacity: 0}, 140);
-    $curs.transit({opacity: 1}, 140);
-    $curs.transit({opacity: 0}, 140, function() {
-      $curs.remove();
-    })
   };
 
   ns.Comp.Puzzle = Puzzle;
