@@ -98,10 +98,9 @@
   };
 
   Proto.addCurs = function() {
-    var curs = document.createElement('div');
-    curs.classList.add('puzzle__curs');
-    this.$cont.append(curs);
-    return $(curs);
+    var $curs = $('<div class="puzzle__curs"></div>')
+    this.$cont.append($curs);
+    return $curs;
   };
 
   Proto.arrangeCursSize = function($curs) {
@@ -156,7 +155,7 @@
     };
 
     if (animate) {
-      this.$cont.transit(coords, 200, 'ease-in-out');
+      this.$cont.transit(coords, 100, 'ease-in-out');
     } else {
       this.$cont.css(coords);
     }
@@ -164,12 +163,7 @@
 
   Proto.enableDOMEvents = function() {
     var self = this;
-    var dragOptions = {
-      relative: true
-    , distance: 10
-    };
-
-    this.$cont.bind('drag', dragOptions, function(e, dd) {
+    this.$cont.bind('drag', function(e, dd) {
       self.contMoved = true;
       self.$cont.css({
         x: ~~(self.contDeltaX + dd.deltaX)
@@ -215,6 +209,7 @@
 
           self.waiting = true;
           self.game.swapPieces(self.data.id, piece1Index, piece2Index, function(data) {
+            self.showScore(data.score);
             self.swapPieces(data.pieces);
             self.selected = null;
             self.waiting = false;
@@ -287,7 +282,6 @@
       self.swapPieces(data.pieces);
     });
   };
-
 
   Proto.clear = function() {
   };
@@ -398,7 +392,7 @@
 
   Proto.swapPieces = function(pieces) {
     var self = this;
-    var swapped = _.map(pieces, function(val, i) {
+    _.each(pieces, function(val, i) {
       var c = self.getPieceCoords(i);
       var rc = self.getPieceRCoords(val);
       var piece = self.pieces[c.x][c.y];
@@ -412,11 +406,15 @@
       }
       piece.update();
       piece.clear();
-      return piece;
     });
-    // pulse swapped pieces
-    _.each(swapped, function(piece) {
-      self.pulseCursor(piece.x, piece.y, 'blue');
+  };
+
+  Proto.showScore = function(score) {
+    var self = this;
+    _.each(score, function(score, i) {
+      var c = self.getPieceCoords(i);
+      var piece = self.pieces[c.x][c.y];
+      piece.showScore(score);
     });
   };
 
@@ -452,11 +450,11 @@
     
     $curs.css('background', color);
     $curs.appendTo(this.$cont);
-    
+      
     $curs.show();
-    $curs.transit({opacity: 0}, 120);
-    $curs.transit({opacity: 1}, 120);
-    $curs.transit({opacity: 0}, 120, function() {
+    $curs.transit({opacity: 0}, 140);
+    $curs.transit({opacity: 1}, 140);
+    $curs.transit({opacity: 0}, 140, function() {
       $curs.remove();
     })
   };

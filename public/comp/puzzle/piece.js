@@ -97,6 +97,25 @@
     this.tooltip = null;
   };
 
+  Proto.showScore = function(score) {
+    var $el = $('<div class="piece__score">' + score + '</div>');
+    
+    $el.css({
+      'lineHeight' : this.pieceSize + 2 + 'px'
+    , 'height'     : this.pieceSize
+    , 'width'      : this.pieceSize
+    , 'left'       : this.cx
+    , 'top'        : this.cy
+    });
+
+    var css = {scale: 2.5, opacity: 0};
+
+    $el.appendTo(this.el.parentNode);
+    $el.transit(css, 400, 'ease-in', function() {
+      $el.remove();
+    });
+  };
+
   var COVERS_MAP = {
     '0000': {x: 0, y: 0}
   , '1111': {x: 1, y: 0}
@@ -221,7 +240,7 @@
   Proto.setBlocked = function(data) {
     if (this.waiting) return;
     this.showLocCover();
-    this.showTooltip(data.userName || 'anonymous');
+    data.userName && this.showTooltip(data.userName);
     this.blocked = true;
   };
 

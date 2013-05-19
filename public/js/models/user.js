@@ -6,6 +6,18 @@ ns.Models.User = Backbone.Model.extend({
   defaults: {
     name: ''
   , email: ''
+  , boards: {
+      general: {
+        score: 0
+      , rank: 0
+      , next: 0
+      },
+      daily: {
+        score: 0
+      , rank: 0
+      , next: 0
+      }
+    }
   },
 
   initialize: function() {

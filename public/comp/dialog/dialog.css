@@ -1,0 +1,37 @@
+.dialog {
+  position: absolute;
+  z-index: 5;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  width: 100%;
+}
+
+.dialog__view {
+  position: relative;
+  margin: 0 auto;
+  width: 700px;
+  background: #fff;
+}
+
+.dialog__cont {
+  position: relative;
+  z-index: 2;
+  padding: 40px 45px;
+}
+
+.dialog__close {
+  display: block;
+  position: absolute;
+  z-index: 3;
+  top: 16px;
+  right: 16px;
+  height: 20px;
+  width: 20px;
+  border: none;
+  cursor: pointer;
+
+  background: no-repeat transparent;
+  background-image: url("/img/close.png");
+}
+

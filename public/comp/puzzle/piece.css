@@ -45,9 +45,26 @@
 }
 
 .piece__tooltip i {
-  padding: 0 10px;
-  background: gold;
+  display: inline-block;
+  height: 18px;
+  padding: 0 8px;
+  line-height: 18px;
+  background: #fff;
+  font-size: 12px;  
   font-style: normal;
   white-space: nowrap;
-  border-radius: 10px;
+  border-radius: 9px;
+  opacity: .8;
+}
+
+.piece__score {
+  position: absolute;
+  text-align: center;
+  font-size: 30px;
+  color: #fff;
+  
+  text-shadow:
+    0 0 1px #000
+  , 0 0 1px #000
+  , 0 0 1px #000;
 }

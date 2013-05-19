@@ -1,0 +1,71 @@
+.panel {
+  position: absolute;
+  z-index: 2;
+  bottom: 0;
+}
+
+.panel_left {
+  left: 50px;
+}
+
+.panel_right {
+  right: 50px;
+}
+
+.panel__info {
+  float: left;
+  padding: 0 5px;
+  margin-right: 5px;
+  height: 28px;
+  line-height: 30px;  
+}
+
+.panel__info,
+.panel__btn {
+  box-sizing: border-box;
+  border-radius: 2px 2px 0 0;
+  background-color: #fff; 
+  border: 1px solid #000;
+  border: none;
+}
+
+.panel__num {
+  margin: 0 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+.panel__btn {
+  float: left;
+  display: block;
+  margin-right: 5px;
+  width: 30px;
+  height: 28px;
+  
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+}
+
+.panel__btn:hover {
+  background-color: gold;
+}
+
+.panel__btn_next {
+  background-image: url("img/next.png");
+}
+.panel__btn_boards {
+  background-image: url("img/boards.png");
+}
+.panel__btn_profile {
+  background-image: url("img/profile.png");
+}
+.panel__btn_about {
+  background-image: url("img/about.png");
+}
+.panel__btn_twitter {
+  background-image: url("img/twitter.png");
+}
+.panel__btn_github {
+  background-image: url("img/github.png");
+}

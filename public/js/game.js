@@ -26,7 +26,7 @@
       self.trigger('release', data);
     });
     this.socket.on('swap', function(data) {
-      self.trigger('swap', data);
+      self.trigger('swap', data.swap);
     });
   };
 
@@ -128,7 +128,10 @@
       if (res.error) {
         return self.triggerError(res.error);
       }
-      cb && cb(res);
+      if (res.user) {
+        self.user.set(res.user);
+      }
+      cb && cb(res.swap);
     });
   };
 

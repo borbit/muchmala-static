@@ -11,9 +11,11 @@
   "/js/ns.js",
   "/js/utils.js",
   "/js/models/user.js",
+  "/comp/dialog/dialog.js",
   "/comp/puzzle/puzzle.js",
   "/comp/puzzle/frame.js",
   "/comp/puzzle/piece.js",
+  "/comp/panel/panel.js",
   "/js/loader.js",
   "/js/game.js",
   "/js/app.js"
