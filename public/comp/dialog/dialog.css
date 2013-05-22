@@ -1,23 +1,27 @@
 .dialog {
   position: absolute;
+  overflow: auto;
   z-index: 5;
   left: 0px;
   top: 0px;
   height: 100%;
   width: 100%;
+  background: rgba(255,255,255,.7);
 }
 
 .dialog__view {
   position: relative;
-  margin: 0 auto;
-  width: 700px;
+  margin: 50px auto;
+  width: 600px;
   background: #fff;
+  box-shadow: 0 5px 15px rgba(0,0,0,.5);
+  border-radius: 2px;
 }
 
 .dialog__cont {
   position: relative;
+  padding: 40px;
   z-index: 2;
-  padding: 40px 45px;
 }
 
 .dialog__close {
@@ -26,12 +30,83 @@
   z-index: 3;
   top: 16px;
   right: 16px;
+  padding: 0;
+  margin: 0;
   height: 20px;
   width: 20px;
-  border: none;
+
+  border-radius: 50%;
+  border: 1px solid #bbb;
+  color: #333;
+  
+  line-height: 18px;
+  vertical-align: middle;
+  box-shadow: 0 0 1px #999;
   cursor: pointer;
 
-  background: no-repeat transparent;
-  background-image: url("/img/close.png");
+  background: -webkit-linear-gradient(top, #fafafa 0%, #ddd 100%);
+  background:    -moz-linear-gradient(top, #fafafa 0%, #ddd 100%);
+  background:     -ms-linear-gradient(top, #fafafa 0%, #ddd 100%);
+  background:      -o-linear-gradient(top, #fafafa 0%, #ddd 100%);
+  background:         linear-gradient(top, #fafafa 0%, #ddd 100%);
 }
 
+.dialog__close:hover {
+  color: #000;
+  border-color: #888;
+  border-left-color: #ccc;
+  border-top-color: #ccc;
+}
+
+.dialog__close:active {
+  box-shadow: none;
+  border-color: #ccc;
+
+  background: -webkit-linear-gradient(top, #f3f3f3 0%, #ddd 100%);
+  background:    -moz-linear-gradient(top, #f3f3f3 0%, #ddd 100%);
+  background:     -ms-linear-gradient(top, #f3f3f3 0%, #ddd 100%);
+  background:      -o-linear-gradient(top, #f3f3f3 0%, #ddd 100%);
+  background:         linear-gradient(top, #f3f3f3 0%, #ddd 100%);
+}
+
+.dialog__view h1,
+.dialog__view h2 {
+  margin: 0 0 20px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 32px;
+}
+
+.dialog__view h2 {
+  font-size: 24px;
+}
+
+.dialog__view p {
+  margin: 15px 0;
+  line-height: 160%;
+  text-align: center;
+  font-size: 14px;
+}
+
+.dialog__view a {
+  font-weight: normal;
+  text-decoration: none;
+  border-bottom: 1px solid;
+  color: #55d;
+}
+
+.dialog__view .fb-like {
+  margin-right: 10px;
+}
+
+.dialog__view .twitter-share-button {
+  width: 82px !important;
+}
+
+.dialog__social {
+  text-align: center;
+}
+
+.about {
+  display: none;
+}

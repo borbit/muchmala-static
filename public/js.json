@@ -12,6 +12,7 @@
   "/js/utils.js",
   "/js/models/user.js",
   "/comp/dialog/dialog.js",
+  "/comp/dialog/about.js",
   "/comp/puzzle/puzzle.js",
   "/comp/puzzle/cursor.js",
   "/comp/puzzle/frame.js",

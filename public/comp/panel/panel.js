@@ -34,7 +34,8 @@
 
     showAbout: function() {
       var dialog = new ns.Comp.Dialog({
-        content: 'test'
+        el: $('.about')
+      , save: true
       });
       dialog.open();
     }

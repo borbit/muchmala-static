@@ -1,5 +1,4 @@
 <div class="panel panel_left">
-  <div id="fb-root"></div>
   <a href="https://twitter.com/muchmala" class="panel__btn panel__btn_twitter" title="Follow us on Twitter"></a>
   <a href="https://github.com/borbit/muchmala" class="panel__btn panel__btn_github" title="Code on GitHub"></a>
   <button class="panel__btn panel__btn_about"></button>
@@ -13,7 +12,7 @@
 </div>
 
 <script type="text/plain" id="tpl_panel_info">
-   <span class="panel__num" title="Your Score">0<%=score%></span><!--
---><span class="panel__num" title="Your Rank">№0000<%=rank+1%></span><!--
---><span class="panel__num" title="Remaining to get next rank">+0000<%=next && next-score%></span>
+   <span class="panel__num" title="Your Score"><%=sprintf('%05d', score)%></span><!--
+--><span class="panel__num" title="Your Rank">№<%=sprintf('%05d', rank+1)%></span><!--
+--><span class="panel__num" title="Remaining to get next rank">+<%=sprintf('%05d', next && next-score)%></span>
 </script>

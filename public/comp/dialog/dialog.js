@@ -7,31 +7,41 @@ ns.Comp.Dialog = Backbone.View.extend({
   },
   
   initialize: function(op) {
-    _.bindAll(this, 'keyup');    
-    _.defaults(op, {
-      content: ''
-    })
+    if (op.save && op.el) {
+      this.setElement(op.el);
+      this.save = true;
+    }
 
+    _.bindAll(this, 'keyup');    
     this.content = op.content;
     this.render();
   },
   
   render: function() {
-    this.setElement(this.tpl({content: '<var></var>'}), true);
-    this.$el.find('var').replaceWith(this.content);
+    if (_.isString(this.content)) {
+      this.setElement(this.tpl({content: this.content}));
+      this.delegateEvents();
+    }
+    if (_.isObject(this.content)) {
+      this.setElement(this.tpl({content: '<var></var>'}));
+      this.$el.find('var').replaceWith(this.content);
+      this.delegateEvents();
+    }
   },
   
   open: function() {
     document.addEventListener('keyup', this.keyup);
+    this.$el.show();
     this.$el.appendTo(document.body);
     this.delegateEvents();
-    this.trigger('open');
   },
   
   close: function() {
     document.removeEventListener('keyup', this.keyup);
-    this.$el.remove();
-    this.trigger('close');
+    this.$el.hide();
+    if (!this.save) {
+      this.$el.remove();
+    }
   },
   
   keyup: function(event) {
