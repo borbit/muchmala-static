@@ -7,12 +7,12 @@ ns.Comp.Dialog = Backbone.View.extend({
   },
   
   initialize: function(op) {
-    if (op.save && op.el) {
+    if (op.el) {
       this.setElement(op.el);
       this.save = true;
     }
 
-    _.bindAll(this, 'keyup');    
+    _.bindAll(this, 'keyup');
     this.content = op.content;
     this.render();
   },

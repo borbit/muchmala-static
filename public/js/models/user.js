@@ -20,6 +20,8 @@ ns.Models.User = Backbone.Model.extend({
     }
   },
 
+  boards: ['general', 'daily'],
+
   initialize: function() {
     this.on('change:id', function(model) {
       localStorage['userid'] = model.id;

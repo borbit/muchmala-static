@@ -1,6 +1,7 @@
 [
   "/css/base.css",
   "/comp/panel/panel.css",
+  "/comp/boards/boards.css",
   "/comp/dialog/dialog.css",
   "/comp/puzzle/puzzle.css",
   "/comp/puzzle/cursor.css",

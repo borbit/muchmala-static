@@ -11,28 +11,35 @@
 
 .panel_right {
   right: 50px;
-  width: 272px;
+  width: 300px;
 }
 
 .panel__info {
   float: left;
-  padding-left: 8px;
   margin-right: 5px;
-  line-height: 26px;
+  padding-left: 10px;
+  line-height: 28px;
+  border-radius: 2px 2px 0 0;
+  font-size: 14px;
+}
+
+.panel__info_general {
+  background-color: #b6e84a;
+}
+
+.panel__info_daily {
   background-color: gold;
 }
 
 .panel__info,
 .panel__btn {
-  height: 24px;
+  height: 26px;
   box-sizing: border-box;
-  border-radius: 2px 2px 0 0;
-  border: 1px solid #000;
-  border: none;
+  cursor: pointer;
 }
 
 .panel__num {
-  margin-right: 8px;
+  margin-right: 10px;
   font-weight: bold;
   color: #333;
 }
@@ -40,30 +47,26 @@
 .panel__btn {
   float: left;
   display: block;
-  margin-right: 5px;
-  width: 26px;
+  width: 30px;
   
-  background-color: #fff;
+  border: none;
+  background-color: #333;
   background-repeat: no-repeat;
   background-position: center;
-  cursor: pointer;
+  
+  text-align: center;
+  text-decoration: none;
+  line-height: 28px;
+  font-size: 16px;
+  color: #fff;
 }
 
-.panel__btn_next {
-  background-image: url("img/next.png");
+.panel__btn:first-child {
+  border-radius: 2px 0 0 0;
 }
-.panel__btn_boards {
-  background-image: url("img/boards.png");
+.panel__btn:last-child {
+  border-radius: 0 2px 0 0;
 }
-.panel__btn_profile {
-  background-image: url("img/profile.png");
-}
-.panel__btn_about {
-  background-image: url("img/about.png");
-}
-.panel__btn_twitter {
-  background-image: url("img/twitter.png");
-}
-.panel__btn_github {
-  background-image: url("img/github.png");
+.panel__btn:hover {
+  background-color: #555;
 }

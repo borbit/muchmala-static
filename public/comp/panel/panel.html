@@ -1,18 +1,20 @@
 <div class="panel panel_left">
-  <a href="https://twitter.com/muchmala" class="panel__btn panel__btn_twitter" title="Follow us on Twitter"></a>
-  <a href="https://github.com/borbit/muchmala" class="panel__btn panel__btn_github" title="Code on GitHub"></a>
-  <button class="panel__btn panel__btn_about"></button>
+  <a href="https://github.com/borbit/muchmala" class="panel__btn panel__btn_github" title="Code on GitHub"><i class="icon-github"></i></a>
+  <a href="https://twitter.com/muchmala" class="panel__btn panel__btn_twitter" title="Follow us on Twitter"><i class="icon-twitter"></i></a>
+  <span class="panel__btn panel__btn_about"><i class="icon-info-sign"></i></span>
 </div>
 
 <div class="panel panel_right">
   <div class="panel__info"></div>
-  <button class="panel__btn panel__btn_profile"></button>
-  <button class="panel__btn panel__btn_boards"></button>
-  <button class="panel__btn panel__btn_next"></button>
+  <div class="panel__btns">
+    <span class="panel__btn panel__btn_profile"><i class="icon-user"></i></span>
+    <span class="panel__btn panel__btn_boards"><i class="icon-trophy"></i></span>
+    <span class="panel__btn panel__btn_next"><i class="icon-arrow-right"></i></span>
+  </div>
 </div>
 
 <script type="text/plain" id="tpl_panel_info">
-   <span class="panel__num" title="Your Score"><%=sprintf('%05d', score)%></span><!--
+   <span class="panel__num" title="Your Score"><%=sprintf('%05d', score < 0 ? 0 : score)%></span><!--
 --><span class="panel__num" title="Your Rank">№<%=sprintf('%05d', rank+1)%></span><!--
 --><span class="panel__num" title="Remaining to get next rank">+<%=sprintf('%05d', next && next-score)%></span>
 </script>

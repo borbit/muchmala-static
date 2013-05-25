@@ -1,0 +1,32 @@
+<script type="text/plain" id="tpl_boards">
+<ul class="boards__tabs">
+<% _.each(boards, function(board, name) { %>
+  <li class="boards__tab boards__tab_<%=name%>"><%=name%></li>
+<% }) %>
+</ul>
+<h1>Leaderboard</h1>
+<% _.each(boards, function(board, name) { %>
+<div class="boards__view boards__view_<%=name%>">
+  <table class="table table__head boards__table">
+    <tr>
+      <td class="table__td"></td>
+      <td class="table__td">Player</td>
+      <td class="table__td">Score</td>
+    </tr>
+  </table>
+  <hr class="boards__sep"/>
+<% if (board.length) { %>
+  <table class="table boards__table">
+  <% var index = 1; %>
+  <% _.each(board, function(row) { %>
+    <tr<%= row.me ? ' class="boards__me"' : '' %>>
+      <td class="table__td"><%= index++ %></td>
+      <td class="table__td"><%= (row.member || 'anonymous') %></td>
+      <td class="table__td"><%= sprintf('%07d', +row.score) %></td>
+    </tr>
+  <% });%>
+  </table>
+<% } %>
+</div>
+<% }) %>
+</script>

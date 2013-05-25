@@ -26,66 +26,51 @@
 
 .dialog__close {
   display: block;
-  position: absolute;
+  position: fixed;
   z-index: 3;
-  top: 16px;
-  right: 16px;
+  top: 70px;
+  left: 50%;
   padding: 0;
-  margin: 0;
-  height: 20px;
-  width: 20px;
-
-  border-radius: 50%;
-  border: 1px solid #bbb;
-  color: #333;
-  
+  margin: 0 0 0 320px;
   line-height: 18px;
-  vertical-align: middle;
-  box-shadow: 0 0 1px #999;
+  font-size: 70px;
   cursor: pointer;
-
-  background: -webkit-linear-gradient(top, #fafafa 0%, #ddd 100%);
-  background:    -moz-linear-gradient(top, #fafafa 0%, #ddd 100%);
-  background:     -ms-linear-gradient(top, #fafafa 0%, #ddd 100%);
-  background:      -o-linear-gradient(top, #fafafa 0%, #ddd 100%);
-  background:         linear-gradient(top, #fafafa 0%, #ddd 100%);
+  color: #000;
 }
 
 .dialog__close:hover {
-  color: #000;
-  border-color: #888;
-  border-left-color: #ccc;
-  border-top-color: #ccc;
-}
-
-.dialog__close:active {
-  box-shadow: none;
-  border-color: #ccc;
-
-  background: -webkit-linear-gradient(top, #f3f3f3 0%, #ddd 100%);
-  background:    -moz-linear-gradient(top, #f3f3f3 0%, #ddd 100%);
-  background:     -ms-linear-gradient(top, #f3f3f3 0%, #ddd 100%);
-  background:      -o-linear-gradient(top, #f3f3f3 0%, #ddd 100%);
-  background:         linear-gradient(top, #f3f3f3 0%, #ddd 100%);
+  color: #555;
 }
 
 .dialog__view h1,
 .dialog__view h2 {
-  margin: 0 0 20px;
-  text-align: center;
+  margin: 0 0 15px;
   font-weight: bold;
   font-size: 32px;
 }
 
 .dialog__view h2 {
+  margin: 0 0 15px 0;
   font-size: 24px;
 }
 
 .dialog__view p {
-  margin: 15px 0;
+  padding: 0;
+  margin: 0 0 15px;
   line-height: 160%;
-  text-align: center;
-  font-size: 14px;
+}
+
+.dialog__view label {
+  display: block;
+  margin: 0 0 15px;
+}
+
+.dialog__view input {
+  margin: 0 0 15px;
+  padding: 5px 0;
+  width: 100%;
+  font-size: 22px;
+  text-indent: 5px;
 }
 
 .dialog__view a {
@@ -93,6 +78,41 @@
   text-decoration: none;
   border-bottom: 1px solid;
   color: #55d;
+}
+
+.dialog__view button {
+  margin: 0 0 10px;
+  padding: 5px 10px;
+
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 2px #fff inset;
+  background: #eee;
+  cursor: pointer;
+  color: #333;
+}
+
+.dialog__view button:last-child {
+  margin-bottom: 0;
+}
+
+.dialog__view button:hover {
+  border-color: #999;
+}
+
+.dialog__view button:active,
+.dialog__view button:disabled {
+  box-shadow: none;
+  border-color: #ccc;
+  color: #777;
+}
+
+.dialog__view button:disabled {
+  cursor: default;
+}
+
+.dialog__inp_err {
+  background: #faa;
 }
 
 .dialog__view .fb-like {
@@ -103,10 +123,7 @@
   width: 82px !important;
 }
 
-.dialog__social {
-  text-align: center;
-}
-
 .about {
   display: none;
+  text-align: center;
 }

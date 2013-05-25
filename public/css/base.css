@@ -5,7 +5,10 @@ html, body {
 body {
   overflow: hidden;
   margin: 0;
+  color: #333;
+}
 
+body, input, button {
   font-family: "Trebuchet MS", sans-serif;
-  font-size: 13px;
+  font-size: 14px;
 }
