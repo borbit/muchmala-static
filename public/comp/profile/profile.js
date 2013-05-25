@@ -57,17 +57,16 @@ ns.Comp.Profile = Backbone.View.extend({
       return this.ui.email.addClass('dialog__inp_err');
     }
 
-    this.ui.submit.addClass('dialog__button_loading');
+    this.ui.submit.append(' ...');
     this.ui.submit.attr('disabled', true);
 
     var data = {
-      userId: this.model.id
+      userId: this.user.id
     , userEmail: email
     };
 
     $.post(sprintf('%s/sign', API_URL), data, function(res) {
       self.ui.submit.html('Check your inbox');
-      self.ui.submit.removeClass('dialog__button_loading');
       self.ui.submit.removeAttr('disabled');
     });
   },

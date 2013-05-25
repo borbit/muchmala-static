@@ -16,10 +16,9 @@ $.event.special.drag.defaults.relative = true;
 
   var puzzle = new ns.Comp.Puzzle({game: game});
   var panel = new ns.Comp.Panel({game: game});
+  var router = new ns.Router({game: game});
 
   game.connect(function() {
-    game.fetchUser(function() {
-      game.getFirst();
-    });
+    Backbone.history.start({pushState: true});
   });
 })();

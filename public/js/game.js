@@ -30,15 +30,15 @@
     });
   };
 
-  Proto.fetchUser = function(hash, cb) {
-    if (_.isFunction(hash)) {
-      cb = hash;
+  Proto.fetchUser = function(signHash, cb) {
+    if (_.isFunction(signHash)) {
+      cb = signHash;
     }
 
     var self = this;
     var auth = this.getAuthData();
-    if (_.isString(hash)) {
-      auth.signHash = hash;
+    if (_.isString(signHash)) {
+      auth.signHash = signHash;
     }
 
     this.socket.emit('user', {user: auth}, function(res) {
@@ -50,7 +50,7 @@
     });
   };
 
-  Proto.getFirst = function(cb) {
+  Proto.getFirstPuzzle = function(cb) {
     var self = this;
     var auth = this.getAuthData();
 
