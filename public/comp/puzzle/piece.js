@@ -60,7 +60,7 @@
     var sx = this.rx % this.spriteSize * this.pieceSize;
     var sy = this.ry % this.spriteSize * this.pieceSize;
     var ctx = this.canvas.getContext('2d');
-
+    
     ctx.clearRect(0, 0, this.pieceSize, this.pieceSize);
     ctx.drawImage(sprite, sx, sy, this.pieceSize,
       this.pieceSize, 0, 0, this.pieceSize, this.pieceSize);

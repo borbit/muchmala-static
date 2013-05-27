@@ -15,6 +15,7 @@
     curBoard: 1,
 
     initialize: function(op) {
+      this.game = op.game;
       this.user = op.game.user;
       this.listenTo(this.user, 'change', this.render);
       this.render();
@@ -38,12 +39,16 @@
       dialog.open();
     },
 
-    showBoards: function() {
+    showBoards: function(e) {
       var boards = new ns.Comp.Boards({user: this.user});
       var dialog = new ns.Comp.Dialog({content: boards.$el});
       boards.on('render', function() {  
+        e.target.classList.remove('panel__btn_loading');
+        e.target.removeAttribute('disabled');
         dialog.open();
       });
+      e.target.classList.add('panel__btn_loading');
+      e.target.setAttribute('disabled', true);
       boards.load();
     },
 
@@ -57,6 +62,19 @@
       this.curBoard++;
       this.curBoard >= this.user.boards.length && (this.curBoard = 0);
       this.render();
+    },
+
+    nextPuzzle: function(e) {
+      var self = this;
+      e.target.classList.add('panel__btn_loading');
+      e.target.setAttribute('disabled', true);
+
+      $.get(sprintf('%s/rand', API_URL), function(puzzleId) {
+        e.target.classList.remove('panel__btn_loading');
+        e.target.removeAttribute('disabled');
+        Backbone.history.navigate('puzzle/' + puzzleId);
+        self.game.getPuzzle(puzzleId);
+      });
     }
   });
 })();

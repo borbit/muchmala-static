@@ -35,8 +35,6 @@ ns.Comp.Boards = Backbone.View.extend({
     , general : this.general.toJSON()
     };
 
-    console.log(boards);
-
     this.$el.html(this.tpl({boards: boards}));
     this.delegateEvents();
     this.showDaily();

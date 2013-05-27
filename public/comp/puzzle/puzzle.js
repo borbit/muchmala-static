@@ -2,54 +2,62 @@
   'use strict'
 
   function Puzzle(op) {
-    this.game = op.game;
-    
-    this.data = {};
-    this.pieces = {};
-    this.timers = {};
-    this.spritesImgs = {};
-    this.coversImgs = null;
-    this.selected = null;
-    this.frame = null
-
+    this.game = op.game;    
     this.loader = new ns.Loader(STATIC_URL);
 
     this.$view = $('.puzzle');
     this.$cont = $('.puzzle__cont');
     this.$cont.hammer();
 
-    this.waiting = false;
-    this.contMoved = false;
-    this.contDelta = {x: 0, y: 0};
-    this.tileSize = null;
-    this.stepSize = null;
-    this.cursor = null;
-
+    this.reset();
     this.enableGameEvents();
   }
 
   var Proto = Puzzle.prototype;
 
+  Proto.reset = function() {
+    this.$cont.empty();
+    this.$cont.css({x: 0, y: 0});
+    this.disableDOMEvents();
+
+    this.data = {};
+    this.pieces = {};
+    this.timers = {};
+    this.spritesImgs = {};
+    this.coversImgs = null;
+    this.selected = null;
+    this.cursor = null;
+    this.frame = null
+    
+    this.waiting = false;
+    this.contMoved = false;
+    this.contDelta = {x: 0, y: 0};
+
+    this.tileSize = null;
+    this.stepSize = null;
+  };
+
   Proto.init = function(data) {
     var self = this;
 
-    this.clear();
+    this.reset();
     this.loader.on('sprite', function(sx, sy, sprite) {
       self.spritesImgs[sx] || (self.spritesImgs[sx] = {});
       self.spritesImgs[sx][sy] = sprite;
       self.showPieces(sx, sy);
     });
 
-    this.loader.on('sprite:finish', function() {
+    this.loader.once('sprite:finish', function() {
       self.loader.loadFrame(data);
+      self.loader.off('sprite');
     });
     
-    this.loader.on('covers', function(covers) {
+    this.loader.once('covers', function(covers) {
       self.loader.loadSprites(data);
       self.coversImgs = covers;
     });
 
-    this.loader.on('frame', function(frame) {
+    this.loader.once('frame', function(frame) {
       self.frame = new ns.Comp.Frame({body: self.$cont, image: frame});
       self.game.getPuzzle(self.data.id);
       self.enableDOMEvents();
@@ -235,6 +243,11 @@
     });
   };
 
+  Proto.disableDOMEvents = function() {
+    $(window).unbind('resize');
+    this.$cont.unbind();
+  };
+
   Proto.enableGameEvents = function() {
     var self = this;
 
@@ -259,9 +272,6 @@
     this.game.on('swap', function(data) {
       self.swapPieces(data.pieces);
     });
-  };
-
-  Proto.clear = function() {
   };
 
   Proto.selectPiece = function(piece, data) {

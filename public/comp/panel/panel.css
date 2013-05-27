@@ -52,7 +52,8 @@
   border: none;
   background-color: #333;
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: center 7px;
+  cursor: pointer;
   
   text-align: center;
   text-decoration: none;
@@ -69,4 +70,24 @@
 }
 .panel__btn:hover {
   background-color: #555;
+}
+
+.panel__btn_about   { background-image: url("/comp/panel/img/about.png"); }
+.panel__btn_github  { background-image: url("/comp/panel/img/github.png"); }
+.panel__btn_twitter { background-image: url("/comp/panel/img/twitter.png"); }
+.panel__btn_profile { background-image: url("/comp/panel/img/profile.png"); }
+.panel__btn_boards  { background-image: url("/comp/panel/img/boards.png"); }
+.panel__btn_next    { background-image: url("/comp/panel/img/next.png"); }
+
+.panel__btn_about:hover   { background-image: url("/comp/panel/img/about-hvr.png"); }
+.panel__btn_github:hover  { background-image: url("/comp/panel/img/github-hvr.png"); }
+.panel__btn_twitter:hover { background-image: url("/comp/panel/img/twitter-hvr.png"); }
+.panel__btn_profile:hover { background-image: url("/comp/panel/img/profile-hvr.png"); }
+.panel__btn_boards:hover  { background-image: url("/comp/panel/img/boards-hvr.png"); }
+.panel__btn_next:hover    { background-image: url("/comp/panel/img/next-hvr.png"); }
+
+.panel__btn_loading,
+.panel__btn_loading:hover {
+  background-image: url("/comp/panel/img/loading.gif");
+  background-color: #333;
 }

@@ -6,7 +6,7 @@
   var Proto = _.extend(Loader.prototype, Backbone.Events);
 
   Proto.image = function(src, cb) {
-    var image = new Image();
+    var image = document.createElement('img');
     image.src = this.host + src;
     image.onload = function() {
       cb(image);

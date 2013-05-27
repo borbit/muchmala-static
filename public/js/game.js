@@ -3,6 +3,7 @@
     this.user = options.user;
     this.host = options.host;
     this.socket = null;
+    this.puzzle = null;
   }
 
   var Proto = _.extend(Game.prototype, Backbone.Events);
@@ -58,6 +59,7 @@
       if (res.error) {
         return self.triggerError(res.error);
       }
+      self.puzzle = res.puzzle;
       self.trigger('puzzle', res.puzzle);
       cb && cb(res.puzzle);
     });
@@ -75,6 +77,7 @@
       if (res.error) {
         return self.triggerError(res.error);
       }
+      self.puzzle = res.puzzle;
       self.trigger('puzzle', res.puzzle);
       cb && cb(res.puzzle);
     });
