@@ -9,12 +9,12 @@ ns.Models.User = Backbone.Model.extend({
   , boards: {
       general: {
         score: 0
-      , rank: 0
+      , rank: -1
       , next: 0
       },
       daily: {
         score: 0
-      , rank: 0
+      , rank: -1
       , next: 0
       }
     }

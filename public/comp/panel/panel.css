@@ -17,7 +17,7 @@
 .panel__info {
   float: left;
   margin-right: 5px;
-  padding-left: 10px;
+  padding: 0 10px;
   line-height: 28px;
   border-radius: 2px 2px 0 0;
   font-size: 14px;
@@ -38,10 +38,14 @@
   cursor: pointer;
 }
 
-.panel__num {
-  margin-right: 10px;
+.panel__score,
+.panel__rank {
   font-weight: bold;
   color: #333;
+}
+
+.panel__score {
+  margin-right: 10px;
 }
 
 .panel__btn {

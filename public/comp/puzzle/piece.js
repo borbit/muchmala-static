@@ -217,13 +217,15 @@
 
   Proto.setWaiting = function() {
     if (this.waiting) return;
-    this.el.classList.add('piece_waiting');
+    this.spinner = document.createElement('div');
+    this.spinner.classList.add('piece__spinner');
+    this.el.appendChild(this.spinner);
     this.waiting = true;
   };
 
   Proto.unsetWaiting = function() {
     if (!this.waiting) return;
-    this.el.classList.remove('piece_waiting');
+    this.el.removeChild(this.spinner);
     this.waiting = false;
   };
 

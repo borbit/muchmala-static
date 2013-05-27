@@ -14,7 +14,8 @@
 </div>
 
 <script type="text/plain" id="tpl_panel_info">
-   <span class="panel__num" title="Your Score"><%=sprintf('%05d', score < 0 ? 0 : score)%></span><!--
---><span class="panel__num" title="Your Rank">№<%=sprintf('%05d', rank+1)%></span><!--
---><span class="panel__num" title="Remaining to get next rank">+<%=sprintf('%05d', next && next-score)%></span>
+   <span class="panel__score" title="Your Score"><!--
+ --><%=sprintf('%05d', score < 0 ? 0 : score)%> /
+    <%=sprintf('%05d', next && next-score)%></span><!--
+--><span class="panel__rank" title="Your Rank">№<%=sprintf('%05d', rank+1)%></span>
 </script>
