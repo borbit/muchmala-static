@@ -18,7 +18,7 @@
   float: left;
   margin-right: 5px;
   padding: 0 10px;
-  line-height: 28px;
+  line-height: 32px;
   border-radius: 2px 2px 0 0;
   font-size: 14px;
 }
@@ -33,7 +33,7 @@
 
 .panel__info,
 .panel__btn {
-  height: 26px;
+  height: 30px;
   box-sizing: border-box;
   cursor: pointer;
 }
@@ -51,17 +51,16 @@
 .panel__btn {
   float: left;
   display: block;
-  width: 30px;
+  width: 32px;
   
   border: none;
   background-color: #333;
   background-repeat: no-repeat;
-  background-position: center 7px;
+  background-position: center 4px;
   cursor: pointer;
   
   text-align: center;
   text-decoration: none;
-  line-height: 28px;
   font-size: 16px;
   color: #fff;
 }
@@ -83,15 +82,9 @@
 .panel__btn_boards  { background-image: url("/comp/panel/img/boards.png"); }
 .panel__btn_next    { background-image: url("/comp/panel/img/next.png"); }
 
-.panel__btn_about:hover   { background-image: url("/comp/panel/img/about-hvr.png"); }
-.panel__btn_github:hover  { background-image: url("/comp/panel/img/github-hvr.png"); }
-.panel__btn_twitter:hover { background-image: url("/comp/panel/img/twitter-hvr.png"); }
-.panel__btn_profile:hover { background-image: url("/comp/panel/img/profile-hvr.png"); }
-.panel__btn_boards:hover  { background-image: url("/comp/panel/img/boards-hvr.png"); }
-.panel__btn_next:hover    { background-image: url("/comp/panel/img/next-hvr.png"); }
-
 .panel__btn_loading,
 .panel__btn_loading:hover {
+  background-position: center 8px;
   background-image: url("/comp/panel/img/loading.gif");
   background-color: #333;
 }

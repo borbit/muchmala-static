@@ -17,8 +17,21 @@
     initialize: function(op) {
       this.game = op.game;
       this.user = op.game.user;
-      this.listenTo(this.user, 'change', this.render);
+
+      this.ui = {
+        info: this.$el.find('.panel__info')
+      , btnNext: this.$el.find('.panel__btn_next')
+      , btnBoards: this.$el.find('.panel__btn_boards')
+      };
+
       this.render();
+      this.listenTo(this.user, 'change', this.render);
+      this.listenTo(this.game, 'puzzle:loading', function() {
+        this.btnLoading(this.ui.btnNext);
+      });
+      this.listenTo(this.game, 'puzzle:load', function() {
+        this.btnReset(this.ui.btnNext);
+      });
     },
 
     render: function() {
@@ -26,12 +39,10 @@
       var boardName = this.user.boards[this.curBoard];
       var boardData = _.extend({score: 0, rank: 0, next: 0}, boards[boardName]);
 
-      var $info = this.$el.find('.panel__info');      
-
-      $info.removeClass();
-      $info.addClass('panel__info');
-      $info.addClass('panel__info_'+boardName);
-      $info.html(this.tpl(boardData));
+      this.ui.info.removeClass();
+      this.ui.info.addClass('panel__info');
+      this.ui.info.addClass('panel__info_'+boardName);
+      this.ui.info.html(this.tpl(boardData));
     },
 
     showAbout: function() {
@@ -39,16 +50,17 @@
       dialog.open();
     },
 
-    showBoards: function(e) {
+    showBoards: function() {
+      var self = this;
       var boards = new ns.Comp.Boards({user: this.user});
       var dialog = new ns.Comp.Dialog({content: boards.$el});
+
       boards.on('render', function() {  
-        e.target.classList.remove('panel__btn_loading');
-        e.target.removeAttribute('disabled');
+        self.btnReset(self.ui.btnBoards);
         dialog.open();
       });
-      e.target.classList.add('panel__btn_loading');
-      e.target.setAttribute('disabled', true);
+
+      this.btnLoading(this.ui.btnBoards);
       boards.load();
     },
 
@@ -64,17 +76,25 @@
       this.render();
     },
 
-    nextPuzzle: function(e) {
+    nextPuzzle: function() {
       var self = this;
-      e.target.classList.add('panel__btn_loading');
-      e.target.setAttribute('disabled', true);
+      this.btnLoading(this.ui.btnNext);
 
       $.get(sprintf('%s/rand', API_URL), function(puzzleId) {
-        e.target.classList.remove('panel__btn_loading');
-        e.target.removeAttribute('disabled');
         Backbone.history.navigate('puzzle/' + puzzleId);
+        self.btnReset(self.ui.btnNext);
         self.game.getPuzzle(puzzleId);
       });
+    },
+
+    btnLoading: function($btn) {
+      $btn.addClass('panel__btn_loading');
+      $btn.attr('disabled', true);
+    },
+
+    btnReset: function($btn) {
+      $btn.removeClass('panel__btn_loading');
+      $btn.removeAttr('disabled', true);
     }
   });
 })();

@@ -60,12 +60,14 @@
     this.loader.once('frame', function(frame) {
       self.frame = new ns.Comp.Frame({body: self.$cont, image: frame});
       self.game.getPuzzle(self.data.id);
+      self.game.trigger('puzzle:load');
       self.enableDOMEvents();
       self.renderFrame();
     });
 
     this.data = data;
     this.loader.loadCovers(data);
+    this.game.trigger('puzzle:loading');
     
     this.tileSize = ns.Comp.Piece.calcTileSize(data.pieceSize);
     this.stepSize = ns.Comp.Piece.calcStepSize(data.pieceSize);

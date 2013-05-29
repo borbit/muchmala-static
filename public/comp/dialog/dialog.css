@@ -44,7 +44,7 @@
 
 .dialog__view h1,
 .dialog__view h2 {
-  margin: 0 0 15px;
+  margin: 0 0 20px;
   font-weight: bold;
   font-size: 32px;
 }
@@ -56,17 +56,17 @@
 
 .dialog__view p {
   padding: 0;
-  margin: 0 0 15px;
+  margin: 0 0 20px;
   line-height: 160%;
 }
 
 .dialog__view label {
   display: block;
-  margin: 0 0 15px;
+  margin: 0 0 20px;
 }
 
 .dialog__view input {
-  margin: 0 0 15px;
+  margin: 0 0 20px;
   padding: 5px 0;
   width: 100%;
   font-size: 22px;
@@ -120,7 +120,7 @@
 }
 
 .dialog__view .twitter-share-button {
-  width: 82px !important;
+  width: 90px !important;
 }
 
 .about {
