@@ -31,14 +31,14 @@ ns.Comp.Dialog = Backbone.View.extend({
   
   open: function() {
     document.addEventListener('keyup', this.keyup);
-    this.$el.show();
+    this.$el.removeClass('dialog_hidden');
     this.$el.appendTo(document.body);
     this.delegateEvents();
   },
   
   close: function() {
     document.removeEventListener('keyup', this.keyup);
-    this.$el.hide();
+    this.$el.addClass('dialog_hidden');
     if (!this.save) {
       this.$el.remove();
     }
