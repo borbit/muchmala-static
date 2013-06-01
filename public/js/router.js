@@ -10,18 +10,24 @@ ns.Router = Backbone.Router.extend({
   },
 
   index: function() {
-    this.game.fetchUser();
-    this.game.getFirstPuzzle();
+    var self = this;
+    this.game.fetchUser(function() {
+      self.game.getFirstPuzzle();
+    });
   },
 
   puzzle: function(id) {
-    this.game.fetchUser();
-    this.game.getPuzzle(id);
+    var self = this;
+    this.game.fetchUser(function() {
+      self.game.getPuzzle(id);
+    });
   },
 
   sign: function(hash) {
-    this.game.fetchUser(hash);
-    this.game.getFirstPuzzle();
-    this.navigate('/');
+    var self = this;
+    this.game.fetchUser(hash, function() {
+      self.game.getFirstPuzzle();
+      self.navigate('/');
+    });
   }
 });
