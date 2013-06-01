@@ -32,6 +32,9 @@
       this.listenTo(this.game, 'puzzle:load', function() {
         this.btnReset(this.ui.btnNext);
       });
+      this.listenToOnce(this.game, 'puzzle:load', function() {
+        this.show();
+      });
     },
 
     render: function() {
@@ -95,6 +98,10 @@
     btnReset: function($btn) {
       $btn.removeClass('panel__btn_loading');
       $btn.removeAttr('disabled', true);
+    },
+
+    show: function() {
+      this.$el.transit({x: 0});
     }
   });
 })();

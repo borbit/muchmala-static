@@ -2,6 +2,12 @@
   position: absolute;
   z-index: 2;
   bottom: 0;
+
+  -webkit-transform: translate(0, 50px);
+     -moz-transform: translate(0, 50px);
+      -ms-transform: translate(0, 50px);
+       -o-transform: translate(0, 50px);
+          transform: translate(0, 50px);
 }
 
 .panel_left {
