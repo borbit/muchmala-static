@@ -59,7 +59,7 @@
 }
 
 .dialog__view h2 {
-  margin: 0 0 15px 0;
+  margin: 0 0 20px;
   font-size: 24px;
 }
 
@@ -90,7 +90,7 @@
 }
 
 .dialog__view button {
-  margin: 0 0 10px;
+  margin: 0 0 20px;
   padding: 5px 10px;
 
   border-radius: 5px;
@@ -118,6 +118,12 @@
 
 .dialog__view button:disabled {
   cursor: default;
+}
+
+.dialog__view hr {
+  margin: 0 0 20px;
+  border: none;
+  border-bottom: 1px solid #bbb;
 }
 
 .dialog__inp_err {
