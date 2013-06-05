@@ -43,7 +43,7 @@ ns.Comp.Dialog = Backbone.View.extend({
       this.$el.remove();
     }
   },
-  
+
   keyup: function(event) {
     if (event.keyCode == 27) {
       this.close();

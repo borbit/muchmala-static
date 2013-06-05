@@ -1,20 +1,5 @@
 .dialog {
-  display: -webkit-box;
-  display: -moz-box;
-  display: box;
-
-  -webkit-box-align: center;
-  -moz-box-align: center;
-  box-align: center;
-
-  -webkit-box-pack: center;
-  -moz-box-pack: center;
-  box-pack: center;
-
-  display: -ms-flexbox;
-  -ms-flex-align: center;
-  -ms-flex-pack: center;
-  
+  display: table;
   position: absolute;
   overflow: auto;
   z-index: 5;
@@ -29,9 +14,14 @@
   display: none;
 }
 
+.dialog__wrap {
+  display: table-cell;
+  vertical-align: middle;
+}
+
 .dialog__view {
   position: relative;
-  margin: 50px 0;
+  margin: 50px auto;
   width: 600px;
   background: #fff;
   box-shadow: 0 5px 15px rgba(0,0,0,.5);
