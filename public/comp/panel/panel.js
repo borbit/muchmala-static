@@ -86,6 +86,7 @@
       $.get(sprintf('%s/rand', API_URL), function(puzzleId) {
         Backbone.history.navigate('puzzle/' + puzzleId);
         self.btnReset(self.ui.btnNext);
+        self.game.leftCurrentPuzzle();
         self.game.getPuzzle(puzzleId);
       });
     },

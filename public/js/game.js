@@ -83,6 +83,22 @@
     });
   };
 
+  Proto.leftCurrentPuzzle = function(cb) {
+    var self = this;
+    var auth = this.getAuthData();
+    var payload = {
+      puzzleId: this.puzzle.id
+    , user: auth
+    };
+
+    this.socket.emit('left', payload, function(res) {
+      if (res.error) {
+        return self.triggerError(res.error);
+      }
+      cb && cb();
+    });
+  };
+
   Proto.selectPiece = function(puzzleId, pieceIndex, cb) {
     var self = this;
     var auth = this.getAuthData();
