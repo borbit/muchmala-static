@@ -1,14 +1,15 @@
 (function() {
   function Game(options) {
     this.user = options.user;
+    this.puzzle = options.puzzle;
     this.host = options.host;
     this.socket = null;
-    this.puzzle = null;
   }
 
   var Proto = _.extend(Game.prototype, Backbone.Events);
 
-  Proto.connect = function(cb) {
+  Proto.connect = function() {
+    var self = this;
     this.socket = io.connect(this.host, {
       'max reconnection attempts' : 20
     , 'reconnection delay'        : 1000
@@ -24,9 +25,9 @@
     this.socket.on('reconnect', function() {
       self.trigger('reconnect');
     });
-
-    var self = this;
-    this.socket.on('connect', cb);
+    this.socket.on('connect', function() {
+      self.trigger('connect');
+    });
     this.socket.on('select', function(data) {
       self.trigger('select', data);
     });
@@ -66,7 +67,7 @@
       if (res.error) {
         return self.triggerError(res.error);
       }
-      self.puzzle = res.puzzle;
+      self.puzzle.set(res.puzzle);
       self.trigger('puzzle', res.puzzle);
       cb && cb(res.puzzle);
     });
@@ -84,7 +85,7 @@
       if (res.error) {
         return self.triggerError(res.error);
       }
-      self.puzzle = res.puzzle;
+      self.puzzle.set(res.puzzle);
       self.trigger('puzzle', res.puzzle);
       cb && cb(res.puzzle);
     });
@@ -157,6 +158,7 @@
       if (res.user) {
         self.user.set(res.user);
       }
+      self.puzzle.set(res.puzzle);
       cb && cb(res.swap);
     });
   };

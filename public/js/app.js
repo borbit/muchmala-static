@@ -9,16 +9,18 @@ $.event.special.drag.defaults.relative = true;
 
 (function() {
   var user = new ns.Models.User();
+  var puzzle = new ns.Models.Puzzle();
   var game = new ns.Game({
     host: IO_URL
+  , puzzle: puzzle
   , user: user
   });
 
-  var puzzle = new ns.Comp.Puzzle({game: game});
-  var panel = new ns.Comp.Panel({game: game});
-  var router = new ns.Router({game: game});
+  new ns.Comp.Puzzle({game: game});
+  new ns.Comp.Panel({game: game});
+  new ns.Router({game: game});
 
-  game.connect(function() {
+  game.once('connect', function() {
     Backbone.history.start({pushState: true});
   });
 
@@ -33,4 +35,12 @@ $.event.special.drag.defaults.relative = true;
       p.hide();
     });
   });
+
+  puzzle.on('change:status', function() {
+    if (puzzle.get('status') == 100) {
+      ns.Popups.mid(ns.texts.finished);
+    }
+  });
+
+  game.connect();
 })();

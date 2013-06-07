@@ -1,5 +1,7 @@
 .piece {
   position: absolute;
+
+  -webkit-backface-visibility: hidden;
 }
 
 .piece__spinner {

@@ -82,11 +82,10 @@
 }
 
 .panel__btn_about   { background-image: url("/comp/panel/img/about.png"); }
-.panel__btn_github  { background-image: url("/comp/panel/img/github.png"); }
-.panel__btn_twitter { background-image: url("/comp/panel/img/twitter.png"); }
 .panel__btn_profile { background-image: url("/comp/panel/img/profile.png"); }
 .panel__btn_boards  { background-image: url("/comp/panel/img/boards.png"); }
 .panel__btn_next    { background-image: url("/comp/panel/img/next.png"); }
+.panel__btn_prev    { background-image: url("/comp/panel/img/prev.png"); }
 
 .panel__btn_loading,
 .panel__btn_loading:hover {

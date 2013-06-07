@@ -56,3 +56,20 @@
 .popup__close:hover {
   background: #333;
 }
+
+.popup__btn  {
+  display: inline-block;
+  margin: 10px 0 0 0;
+  padding: 7px 15px;
+  border: none;
+  border-radius: 2px;
+  background: #888;
+  text-decoration: none;
+  cursor: pointer;
+  color: #fff;
+}
+
+.popup__btn:hover,
+.popup__btn:active {
+  background: #333;
+}

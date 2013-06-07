@@ -106,7 +106,6 @@
 .dialog__view button {
   margin: 0 0 20px;
   padding: 7px 10px;
-  
   border: none;
   border-radius: 2px;
   background: #888;
@@ -118,14 +117,10 @@
   margin-bottom: 0;
 }
 
-.dialog__view button:hover {
-  border-color: #999;
-}
-
+.dialog__view button:hover,
 .dialog__view button:active,
 .dialog__view button:disabled {
-  box-shadow: none;
-  color: #aaa;
+  background: #333;
 }
 
 .dialog__view button:disabled {

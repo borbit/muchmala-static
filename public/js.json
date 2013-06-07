@@ -11,6 +11,7 @@
   "/js/ns.js",
   "/js/utils.js",
   "/js/models/user.js",
+  "/js/models/puzzle.js",
   "/comp/dialog/dialog.js",
   "/comp/dialog/about.js",
   "/comp/boards/boards.js",
