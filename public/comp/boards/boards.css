@@ -1,3 +1,7 @@
+.boards .table__head {
+  margin-bottom: 10px;
+}
+
 .boards .table__td {
   padding: 5px 0;
   text-align: center;

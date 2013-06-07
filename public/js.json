@@ -20,8 +20,11 @@
   "/comp/puzzle/frame.js",
   "/comp/puzzle/piece.js",
   "/comp/panel/panel.js",
+  "/comp/popup/popup.js",
+  "/comp/popup/popups.js",
   "/js/router.js",
   "/js/loader.js",
+  "/js/texts.js",
   "/js/game.js",
   "/js/app.js"
 ]

@@ -18,6 +18,13 @@
     this.socket.on('reconnecting', function(d, attempt) {
       if (attempt == 20) self.trigger('reconnect_failed');
     });
+    this.socket.on('disconnect', function() {
+      self.trigger('disconnect');
+    });
+    this.socket.on('reconnect', function() {
+      self.trigger('reconnect');
+    });
+
     var self = this;
     this.socket.on('connect', cb);
     this.socket.on('select', function(data) {

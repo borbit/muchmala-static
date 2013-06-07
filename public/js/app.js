@@ -21,4 +21,16 @@ $.event.special.drag.defaults.relative = true;
   game.connect(function() {
     Backbone.history.start({pushState: true});
   });
+
+  game.on('disconnect', function() {
+    var p = ns.Popups.top(ns.texts.disconnect);
+    game.once('reconnect', function() {
+      ns.Popups.top(ns.texts.reconnect, {time: 2000});
+      p.hide();
+    });
+    game.once('reconnect_failed', function() {
+      ns.Popups.top(ns.texts.reconnect_failed);
+      p.hide();
+    });
+  });
 })();

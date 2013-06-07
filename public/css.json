@@ -5,5 +5,6 @@
   "/comp/dialog/dialog.css",
   "/comp/puzzle/puzzle.css",
   "/comp/puzzle/cursor.css",
-  "/comp/puzzle/piece.css"
+  "/comp/puzzle/piece.css",
+  "/comp/popup/popups.css"
 ]
