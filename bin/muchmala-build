@@ -1,0 +1,117 @@
+#!/usr/bin/env node
+var fs = require('fs');
+var zlib = require('zlib');
+var path = require('path');
+var knox = require('knox');
+var async = require('async');
+
+var package = require('../package.json');
+var config = require('../config');
+
+var cssFiles = require('../public/css.json');
+var jsFiles = require('../public/js.json');
+
+var cssDist = path.join(config.distsRoot, package.version + '.css');
+var jsDist = path.join(config.distsRoot, package.version + '.js');
+
+async.waterfall([
+  function(cb) {
+    console.log('— Packing JS files...');
+    packJS(cb);
+  },
+  function(cb) {
+    console.log('— Packing CSS files...');
+    packCSS(cb);
+  },
+  function(cb) {
+    console.log('— Uploading files...');
+    upload(cb);
+  }
+], function(err) {
+  if (err) throw err;
+  console.log('— Done: %s', package.version);
+  process.exit();
+});
+
+function packJS(cb) {
+  var uglify = require('uglify-js');
+  var uglifyJsp = uglify.parser;
+  var uglifyPro = uglify.uglify;
+
+  async.waterfall([
+    function(cb) {
+      getFilesContent(jsFiles, cb);
+    },
+    function(content, cb) {
+      var ast = uglifyJsp.parse(content);
+
+      ast = uglifyPro.ast_mangle(ast);
+      ast = uglifyPro.ast_squeeze(ast);
+      
+      zlib.gzip(uglifyPro.gen_code(ast), cb);
+    },
+    function(content, cb) {
+      fs.writeFile(jsDist, content, cb);
+    }
+  ], cb);
+}
+
+function packCSS(cb) {
+  var Enhance = require('enhance-css');
+  var csso = require('csso');
+
+  async.waterfall([
+    function(cb) {
+      getFilesContent(cssFiles, cb);
+    },
+    function(content, cb) {
+      var enhance = new Enhance({
+        rootPath: config.publicRoot
+      });
+      content = csso.justDoIt(content);
+      enhance.process(content, cb);
+    },
+    function(enhanced, cb) {
+      zlib.gzip(enhanced.embedded.plain, cb);
+    },
+    function(content, cb) {
+      fs.writeFile(cssDist, content, cb);
+    }
+  ], cb);
+}
+
+function upload(cb) {
+  var s3 = knox.createClient({
+    bucket: config.bucket
+  , secret: config.secret
+  , key: config.key
+  });
+
+  var headers = {
+    'Content-Encoding': 'gzip'
+  , 'Expires': 'Thu, 31 Dec 2019 23:55:55 GMT'
+  , 'Cache-Control': 'max-age=315360000, public'
+  };
+
+  var jsDistS3 = path.join('dists', package.version + '.js');
+  var cssDistS3 = path.join('dists', package.version + '.css');
+
+  async.parallel([
+    function(cb) {
+      s3.putFile(jsDist, jsDistS3, headers, cb);
+    },
+    function(cb) {
+      s3.putFile(cssDist, cssDistS3, headers, cb);
+    }
+  ], cb);
+}
+
+function getFilesContent(files, cb) {
+  async.reduce(files, '', function(content, file, cb) {
+    file = path.join(config.publicRoot, file);
+    cb(null, content + fs.readFileSync(file));
+  }, function(err, content) {
+    if (err) return cb(err);
+    cb(null, content);
+  });
+}

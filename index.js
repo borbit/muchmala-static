@@ -1,3 +1,4 @@
+var package = require('./package');
 var express = require('express');
 var cons = require('consolidate');
 var path = require('path');
@@ -31,8 +32,13 @@ exports.createServer = function(config, cb) {
   app.locals.gaKey     = config.gaKey;
 
   app.configure('development', function() {
-    app.locals.css = JSON.parse(fs.readFileSync(path.join(__dirname, 'public/css.json')));
-    app.locals.js = JSON.parse(fs.readFileSync(path.join(__dirname, 'public/js.json')));
+    app.locals.css = require('./public/css.json');
+    app.locals.js = require('./public/js.json');
+  });
+
+  app.configure('production', function() {
+    app.locals.css = ['/dists/' + package.version + '.css'];
+    app.locals.js = ['/dists/' + package.version + '.js'];
   });
 
   app.configure(function() {

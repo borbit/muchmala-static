@@ -7,6 +7,10 @@
   ],
   "dependencies": {
     "ejs": "*",
+    "csso": "*",
+    "knox": "*",
+    "uglify-js": "1.x",
+    "enhance-css": "*",
     "consolidate": "*",
     "express": "*",
     "lodash": "*",
