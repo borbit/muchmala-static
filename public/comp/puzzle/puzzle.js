@@ -197,6 +197,7 @@
 
           self.waiting = true;
           self.game.swapPieces(self.data.id, piece1Index, piece2Index, function(data) {
+            self.clearFavicon();
             self.showScore(data.score);
             self.swapPieces(data.pieces);
             self.selected = null;
@@ -282,7 +283,6 @@
     this.setFavicon(piece.shapeKey());
     this.selected = piece;
 
-
     var self = this;
     this.timers[piece.x] || (this.timers[piece.x] = {});
     this.timers[piece.x][piece.y] = setTimeout(function() {
@@ -298,8 +298,8 @@
     }
     piece.unsetWaiting();
     piece.unsetSelected();
-    this.clearFavicon();
     this.selected = null;
+    this.clearFavicon();
   };
 
   Proto.blockPiece = function(piece, data) {
