@@ -43,5 +43,9 @@ $.event.special.drag.defaults.relative = true;
     }
   });
 
+  setTimeout(function() {
+    ns.Popups.mid(ns.texts.finished);
+  }, 2000);
+
   game.connect();
 })();

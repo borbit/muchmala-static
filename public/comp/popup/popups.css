@@ -43,7 +43,7 @@
   width: 24px;
   height: 30px;
   line-height: 24px;
-  
+
   text-align: right;
   font-weight: bold;
   font-size: 20px;
@@ -56,21 +56,4 @@
 
 .popup__close:hover {
   background: #000;
-}
-
-.popup__btn  {
-  display: inline-block;
-  margin: 10px 0 0 0;
-  padding: 7px 15px;
-  border: none;
-  border-radius: 2px;
-  background: #888;
-  text-decoration: none;
-  cursor: pointer;
-  color: #fff;
-}
-
-.popup__btn:hover,
-.popup__btn:active {
-  background: #333;
 }
