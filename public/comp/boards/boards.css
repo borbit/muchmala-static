@@ -1,7 +1,3 @@
-.boards .table__head {
-  margin-bottom: 10px;
-}
-
 .boards .table__td {
   padding: 5px 0;
   text-align: center;
@@ -54,7 +50,7 @@
 .boards__tab:hover,
 .boards__tab_act {
   position: relative;
-  border-radius: 6px;
+  border-radius: 2px;
 }
 
 .boards__tab_daily:hover,
