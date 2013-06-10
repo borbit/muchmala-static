@@ -27,21 +27,26 @@ ns.Comp.Dialog = Backbone.View.extend({
       this.$el.find('var').replaceWith(this.content);
       this.delegateEvents();
     }
+    this.$view = this.$el.find('.dialog__view');
   },
   
   open: function() {
     document.addEventListener('keyup', this.keyup);
-    this.$el.appendTo(document.body);
+
     this.$el.show();
-    this.$el.css({'y': -10});
-    this.$el.transit({'y': 0, 'opacity': 1}, 200);
+    this.$el.appendTo(document.body);
+    this.$view.css({y: -10});
+    this.$view.transit({y: 0}, 200);
+    this.$el.transit({opacity: 1}, 200);
     this.delegateEvents();
   },
   
   close: function() {
-    var self = this;
     document.removeEventListener('keyup', this.keyup);
-    this.$el.transit({y: -10, 'opacity': 0}, 200, function() {
+
+    var self = this;
+    this.$view.transit({y: -10}, 200);
+    this.$el.transit({opacity: 0}, 200, function() {
       self.$el.hide();
       self.save || self.$el.remove();
     });
