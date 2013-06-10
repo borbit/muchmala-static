@@ -28,6 +28,7 @@ $.event.special.drag.defaults.relative = true;
     var p = ns.Popups.top(ns.texts.disconnect);
     game.once('reconnect', function() {
       ns.Popups.top(ns.texts.reconnect, {time: 2000});
+      game.getPuzzle(puzzle.get('id'));
       p.hide();
     });
     game.once('reconnect_failed', function() {
