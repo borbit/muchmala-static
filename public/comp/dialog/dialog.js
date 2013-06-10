@@ -31,17 +31,20 @@ ns.Comp.Dialog = Backbone.View.extend({
   
   open: function() {
     document.addEventListener('keyup', this.keyup);
-    this.$el.removeClass('dialog_hidden');
     this.$el.appendTo(document.body);
+    this.$el.show();
+    this.$el.css({'y': -10});
+    this.$el.transit({'y': 0, 'opacity': 1}, 200);
     this.delegateEvents();
   },
   
   close: function() {
+    var self = this;
     document.removeEventListener('keyup', this.keyup);
-    this.$el.addClass('dialog_hidden');
-    if (!this.save) {
-      this.$el.remove();
-    }
+    this.$el.transit({y: -10, 'opacity': 0}, 200, function() {
+      self.$el.hide();
+      self.save || self.$el.remove();
+    });
   },
 
   keyup: function(event) {

@@ -30,7 +30,7 @@ ns.Popup = Backbone.View.extend({
     self.trigger('beforeShow');
     self.showing = true;
     self.$el.css({'y': -10});
-    self.$el.transit({'y': 0, 'opacity': 1}, function() {
+    self.$el.transit({'y': 0, 'opacity': 1}, 200, function() {
       self.options.time && setTimeout(self.hide, self.options.time);
       self.trigger('show');
     });
@@ -40,7 +40,7 @@ ns.Popup = Backbone.View.extend({
     var self = this;
     self.trigger('beforeHide');
     self.hidding = true;
-    self.$el.transit({y: '-=10', 'opacity': 0}, function() {
+    self.$el.transit({y: '-=10', 'opacity': 0}, 200, function() {
       self.hidding = false;
       self.trigger('hide');
       self.$el.remove();

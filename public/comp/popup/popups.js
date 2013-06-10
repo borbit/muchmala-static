@@ -181,7 +181,7 @@
   function arrangeBody(body, popups) {
     var height;
     if (height = calcBodyHeight(popups)) {
-      body.transit({'y': -~~(height/2)});
+      body.transit({'y': -~~(height/2)}, 200);
     }
   }
 
