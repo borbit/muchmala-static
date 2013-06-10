@@ -38,14 +38,19 @@ $.event.special.drag.defaults.relative = true;
   });
 
   puzzle.on('change:status', function() {
-    if (puzzle.get('status') == 100) {
-      ns.Popups.mid(ns.texts.finished);
-    }
-  });
+    if (puzzle.get('status') < 100) return;
 
-  setTimeout(function() {
-    ns.Popups.mid(ns.texts.finished);
-  }, 2000);
+    var popup = ns.Popups.mid(ns.texts.finished);
+    
+    popup.$el.on('click', '.popup__play-next', function() {
+      $(this).attr('disabled', true);
+      $(this).append('...');
+
+      game.getNextPuzzle(function() {
+        popup.hide();
+      });
+    });
+  });
 
   game.connect();
 })();

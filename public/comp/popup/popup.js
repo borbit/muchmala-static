@@ -10,6 +10,8 @@ ns.Popup = Backbone.View.extend({
   , mes: ''
   },
 
+  className: 'popup',
+
   initialize: function(options) {
     _.bindAll(this, 'hide');
     this.options = _.defaults(options, this.defaults);
@@ -18,7 +20,7 @@ ns.Popup = Backbone.View.extend({
   },
 
   render: function() {
-    this.$el = $(this.tpl(this.options));
+    this.$el.html(this.tpl(this.options));
     this.$el.appendTo(this.options.body);
     this.delegateEvents();
   },

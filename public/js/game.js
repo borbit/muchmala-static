@@ -73,6 +73,28 @@
     });
   };
 
+  Proto.getNextPuzzle = function(cb) {
+    var self = this;
+    var url = sprintf('%s/next/%s', API_URL, this.puzzle.get('id'));
+
+    $.get(url, function(puzzleId) {
+      Backbone.history.navigate('puzzle/' + puzzleId);
+      self.leftCurrentPuzzle();
+      self.getPuzzle(puzzleId, cb);
+    });
+  };
+
+  Proto.getPrevPuzzle = function(cb) {
+    var self = this;
+    var url = sprintf('%s/prev/%s', API_URL, this.puzzle.get('id'));
+
+    $.get(url, function(puzzleId) {
+      Backbone.history.navigate('puzzle/' + puzzleId);
+      self.leftCurrentPuzzle();
+      self.getPuzzle(puzzleId, cb);
+    });
+  };
+
   Proto.getPuzzle = function(puzzleId, cb) {
     var self = this;
     var auth = this.getAuthData();

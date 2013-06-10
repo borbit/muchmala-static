@@ -38,8 +38,8 @@
         this.ui.btnNext.attr('disabled', true);
       });
       this.listenTo(this.game, 'puzzle:load', function() {
-        this.ui.btnPrev.removeAttr('disabled');
-        this.ui.btnNext.removeAttr('disabled');
+        this.btnReset(this.ui.btnPrev);
+        this.btnReset(this.ui.btnNext);
       });
     },
 
@@ -86,35 +86,13 @@
     },
 
     prevPuzzle: function() {
-      var self = this;
-      var url = sprintf('%s/prev/%s', API_URL, this.puzzle.get('id'));
-      
       this.btnLoading(this.ui.btnPrev);
-      this.listenToOnce(this.game, 'puzzle:load', function() {
-        self.btnReset(self.ui.btnPrev);
-      });
-
-      $.get(url, function(puzzleId) {
-        Backbone.history.navigate('puzzle/' + puzzleId);
-        self.game.leftCurrentPuzzle();
-        self.game.getPuzzle(puzzleId);
-      });
+      this.game.getPrevPuzzle();
     },
 
     nextPuzzle: function() {
-      var self = this;
-      var url = sprintf('%s/next/%s', API_URL, this.puzzle.get('id'));
-
       this.btnLoading(this.ui.btnNext);
-      this.listenToOnce(this.game, 'puzzle:load', function() {
-        self.btnReset(self.ui.btnNext);
-      });
-
-      $.get(url, function(puzzleId) {
-        Backbone.history.navigate('puzzle/' + puzzleId);
-        self.game.leftCurrentPuzzle();
-        self.game.getPuzzle(puzzleId);
-      });
+      this.game.getNextPuzzle();
     },
 
     btnLoading: function($btn) {
