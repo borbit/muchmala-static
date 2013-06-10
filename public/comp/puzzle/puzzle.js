@@ -279,7 +279,9 @@
   Proto.selectPiece = function(piece, data) {
     piece.unsetWaiting();
     piece.setSelected(data);
+    this.setFavicon(piece.shapeKey());
     this.selected = piece;
+
 
     var self = this;
     this.timers[piece.x] || (this.timers[piece.x] = {});
@@ -296,6 +298,7 @@
     }
     piece.unsetWaiting();
     piece.unsetSelected();
+    this.clearFavicon();
     this.selected = null;
   };
 
@@ -431,6 +434,21 @@
     , lenVer: this.data.lenVer
     , pieces: this.pieces
     });
+  };
+
+  Proto.setFavicon = function(name) {
+    $('link[rel="shortcut icon"]').remove();
+
+    var favicon = $('<link>');
+    var href = STATIC_URL + '/img/favicon' + (name ? '_' + name : '') + '.png';
+
+    favicon.attr('rel', 'shortcut icon');
+    favicon.attr('href', href);
+    favicon.appendTo(document.head);
+  };
+
+  Proto.clearFavicon = function() {
+    this.setFavicon();
   };
 
   ns.Comp.Puzzle = Puzzle;
