@@ -32,6 +32,15 @@
       this.listenToOnce(this.game, 'puzzle:load', function() {
         this.show();
       });
+
+      this.listenTo(this.game, 'puzzle:loading', function() {
+        this.ui.btnPrev.attr('disabled', true);
+        this.ui.btnNext.attr('disabled', true);
+      });
+      this.listenTo(this.game, 'puzzle:load', function() {
+        this.ui.btnPrev.removeAttr('disabled');
+        this.ui.btnNext.removeAttr('disabled');
+      });
     },
 
     render: function() {

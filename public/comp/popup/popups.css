@@ -57,3 +57,7 @@
 .popup__close:hover {
   background: #000;
 }
+
+.popup__play-next {
+  margin-top: 10px;
+}
