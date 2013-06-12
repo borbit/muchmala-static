@@ -11,7 +11,9 @@ module.exports = {
 , publicRoot : path.join(__dirname, 'public')
 , distsRoot  : path.join(__dirname, 'dists')
 
-, bucket : 'your_s3_bucket'
-, secret : 'your_s3_secret'
-, key    : 'your_s3_key'
+, s3Bucket : process.env.S3_BUCKET || 'your_s3_bucket'
+, s3Secret : process.env.S3_SECRET || 'your_s3_secret'
+, s3Key    : process.env.S3_KEY    || 'your_s3_key'
+
+, gaKey  : process.env.GA_KEY
 };

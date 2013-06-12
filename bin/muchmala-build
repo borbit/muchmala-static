@@ -82,9 +82,9 @@ function packCSS(cb) {
 
 function upload(cb) {
   var s3 = knox.createClient({
-    bucket: config.bucket
-  , secret: config.secret
-  , key: config.key
+    bucket: config.s3Bucket
+  , secret: config.s3Secret
+  , key: config.s3Key
   });
 
   var headers = {
