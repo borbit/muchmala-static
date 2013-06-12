@@ -13,7 +13,7 @@
   height: 4px;
   width: 18px;
   
-  background-image: url("img/spinner.png");
+  background-image: url("img/spinner.png?embed");
 
   -webkit-animation: waiting 1.2s steps(6) infinite;
      -moz-animation: waiting 1.2s steps(6) infinite;
