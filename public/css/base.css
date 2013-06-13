@@ -1,3 +1,17 @@
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto Regular'), local('Roboto-Regular'), url("/css/roboto/roboto-normal.woff?embed") format('woff');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Roboto Bold'), local('Roboto-Bold'), url("/css/roboto/roboto-bold.woff?embed") format('woff');
+}
+
 html, body {
   height: 100%;
 }
@@ -9,6 +23,6 @@ body {
 }
 
 body, input {
-  font-family: "Trebuchet MS", sans-serif;
+  font-family: "Roboto", "Trebuchet MS", sans-serif;
   font-size: 14px;
 }
