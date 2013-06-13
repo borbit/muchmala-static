@@ -25,6 +25,7 @@
       , btnPrev: this.$el.find('.panel__btn_prev')
       , btnNext: this.$el.find('.panel__btn_next')
       , btnBoards: this.$el.find('.panel__btn_boards')
+      , btnAbout: this.$el.find('.panel__btn_about')
       };
 
       this.render();
@@ -52,9 +53,15 @@
       this.ui.info.addClass('panel__info');
       this.ui.info.addClass('panel__info_'+boardName);
       this.ui.info.html(this.tpl(boardData));
+
+      if (!localStorage.getItem('panel__about_visited')) {
+        this.ui.btnAbout.addClass('panel__btn_blink');
+      }
     },
 
     showAbout: function() {
+      this.ui.btnAbout.removeClass('panel__btn_blink');
+      localStorage.setItem('panel__about_visited', 'yes');
       var dialog = new ns.Comp.Dialog({el: $('.about')});
       dialog.open();
     },

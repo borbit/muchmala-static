@@ -37,6 +37,16 @@
   to   { background-position: 0 -24px; }
 }
 
+@-ms-keyframes waiting {
+  from { background-position: 0 0px; }
+  to   { background-position: 0 -24px; }
+}
+
+@-o-keyframes waiting {
+  from { background-position: 0 0px; }
+  to   { background-position: 0 -24px; }
+}
+
 .piece__canvas,
 .piece__cover {
   position: absolute;
