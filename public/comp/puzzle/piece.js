@@ -110,10 +110,10 @@
     , 'top'        : this.cy
     });
 
-    var css = {'font-size': 60, opacity: 0};
+    var css = {'font-size': 70, opacity: 0};
 
     $el.appendTo(this.el.parentNode);
-    $el.transit(css, 400, 'ease-out', function() {
+    $el.transit(css, 600, 'ease-out', function() {
       $el.remove();
     });
   };
