@@ -65,20 +65,19 @@
 
   var Proto = Piece.prototype;
 
-  Proto.draw = function(ctx) {
-    this.drawPiece(ctx);
+  Proto.draw = function() {
+    this.drawPiece();
 
     if (this.selected) {
-      this.drawCover('sel', ctx);
+      this.drawCover('sel');
     } else if (this.blocked) {
-      this.drawCover('loc', ctx);
+      this.drawCover('loc');
     } else if (this.x != this.rx || this.y != this.ry) {
-      this.drawCover('def', ctx);
+      this.drawCover('def');
     }
   };
 
-  Proto.drawPiece = function(ctx) {
-    ctx || (ctx = this.ctx);
+  Proto.drawPiece = function() {
     var spriteX = ~~(this.rx / this.spriteSize);
     var spriteY = ~~(this.ry / this.spriteSize);
     var sprite = this.sprites[spriteX][spriteY];
@@ -86,17 +85,16 @@
     var sx = this.rx % this.spriteSize * this.pieceSize;
     var sy = this.ry % this.spriteSize * this.pieceSize;
     
-    ctx.drawImage(sprite, sx, sy, this.pieceSize, this.pieceSize,
+    this.ctx.drawImage(sprite, sx, sy, this.pieceSize, this.pieceSize,
       this.cx, this.cy, this.pieceSize, this.pieceSize);
   };
 
-  Proto.drawCover = function(type, ctx) {
-    ctx || (ctx = this.ctx);
+  Proto.drawCover = function(type) {
     var coords = COVERS_MAP[this.shapeKey()];
     var sx = coords.x * this.pieceSize;
     var sy = coords.y * this.pieceSize;
     
-    ctx.drawImage(this.covers[type], sx, sy, this.pieceSize, this.pieceSize,
+    this.ctx.drawImage(this.covers[type], sx, sy, this.pieceSize, this.pieceSize,
       this.cx, this.cy, this.pieceSize, this.pieceSize);
   };
 

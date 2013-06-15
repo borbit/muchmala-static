@@ -385,19 +385,14 @@
           rc.y >= y1 && rc.y < y2) {
 
         var c = self.getPieceCoords(i);
-        var piece = new ns.Comp.Piece({
-          x: c.x, y: c.y
+        var piece = self.createPiece({
+          index: i
+        , x: c.x, y: c.y
         , rx: rc.x, ry: rc.y
         , t: ns.Comp.Piece.earT(val)
         , b: ns.Comp.Piece.earB(val)
         , l: ns.Comp.Piece.earL(val)
         , r: ns.Comp.Piece.earR(val)
-        , index: i
-
-        , pieceSize: self.data.pieceSize
-        , spriteSize: self.data.spriteSize
-        , sprites: self.spritesImgs
-        , covers: self.coversImgs
         , canvas: self.canvas
         , ctx: self.ctx
         });
@@ -406,6 +401,15 @@
         self.pieces[c.x][c.y] = piece;
       }
     });
+  };
+
+  Proto.createPiece = function(op) {
+    return new ns.Comp.Piece(_.extend({
+      pieceSize: this.data.pieceSize
+    , spriteSize: this.data.spriteSize
+    , sprites: this.spritesImgs
+    , covers: this.coversImgs
+    }, op));
   };
 
   Proto.swapPieces = function(pieces) {
@@ -434,23 +438,38 @@
     var size = this.getViewportSize();
     var ctx = canvas.getContext('2d');
 
-    canvas.height = size.height;
-    canvas.width = size.width;
+    canvas.height = (this.tileSize + 1) * 3 + this.stepSize * 2;
+    canvas.width  = (this.tileSize + 1) * 3 + this.stepSize * 2;
 
     var x1 = Math.max(0, piece.x - 1);
     var y1 = Math.max(0, piece.y - 1);
     var x2 = Math.min(this.data.lenHor - 1, piece.x + 1);
     var y2 = Math.min(this.data.lenVer - 1, piece.y + 1);
 
+    var first = this.pieces[x1][y1];
+    var clone, exist;
+
     for (var x = x1; x <= x2; x++) {
     for (var y = y1; y <= y2; y++) {
-      this.pieces[x][y].draw(ctx);
+      exist = this.pieces[x][y];
+      clone = this.createPiece({
+        x: x, y: y
+      , rx: exist.rx, ry: exist.ry
+      , t: exist.t, b: exist.b
+      , l: exist.l, r: exist.r
+      , ctx: ctx
+      });
+      
+      clone.cx -= (this.tileSize + 1) * first.x;
+      clone.cy -= (this.tileSize + 1) * first.y;
+      clone.selected = exist.selected;
+      clone.blocked = exist.blocked;
+      clone.draw();
     }}
     
     this.ctx.clearRect(piece.cx, piece.cy, this.data.pieceSize, this.data.pieceSize);
-    this.ctx.drawImage(canvas, piece.cx, piece.cy, this.data.pieceSize, this.data.pieceSize,
-      piece.cx, piece.cy, this.data.pieceSize, this.data.pieceSize);
-
+    this.ctx.drawImage(canvas, this.tileSize+1, this.tileSize+1, this.data.pieceSize,
+      this.data.pieceSize, piece.cx, piece.cy, this.data.pieceSize, this.data.pieceSize);
   };
 
   Proto.showScore = function(score) {
