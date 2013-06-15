@@ -10,7 +10,8 @@
   position: relative;
 }
 
-.puzzle__frame {
+.puzzle__frame,
+.puzzle__pieces {
   position: absolute;
   left: 0;
   top: 0;

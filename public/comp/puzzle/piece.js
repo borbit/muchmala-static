@@ -1,123 +1,4 @@
 (function() {
-  function Piece(op) {
-    this.index = op.index;
-
-    this.x = op.x;
-    this.y = op.y;
-
-    this.rx = op.rx;
-    this.ry = op.ry;
-
-    this.t = op.t;
-    this.b = op.b;
-    this.l = op.l;
-    this.r = op.r;
-    
-    this.covers = op.covers;
-    this.sprites = op.sprites;
-    this.pieceSize = op.pieceSize;
-    this.spriteSize = op.spriteSize;
-
-    this.tileSize = Piece.calcTileSize(this.pieceSize);
-    this.stepSize = Piece.calcStepSize(this.pieceSize);
-
-    this.cx = this.x * (this.tileSize + 1);
-    this.cy = this.y * (this.tileSize + 1);
-
-    // flags
-    this.waiting = false;
-    this.selected = false;
-    this.blocked = false;
-
-    this.render();
-  }
-
-  var Proto = Piece.prototype;
-
-  Proto.render = function() {
-    this.el = document.createElement('div');
-    this.el.style.height = this.pieceSize + 'px';
-    this.el.style.width = this.pieceSize + 'px';
-    this.el.style.left = this.cx + 'px';
-    this.el.style.top = this.cy + 'px';
-    this.el.classList.add('piece');
-
-    this.canvas = document.createElement('canvas');
-    this.canvas.classList.add('piece__canvas');
-    this.canvas.height = this.pieceSize;
-    this.canvas.width = this.pieceSize;
-    this.draw();
-
-    this.el.appendChild(this.canvas);
-    this.updateCover();
-  };
-
-  Proto.draw = function() {
-    var spriteX = ~~(this.rx / this.spriteSize);
-    var spriteY = ~~(this.ry / this.spriteSize);
-    var sprite = this.sprites[spriteX][spriteY];
-
-    var sx = this.rx % this.spriteSize * this.pieceSize;
-    var sy = this.ry % this.spriteSize * this.pieceSize;
-    var ctx = this.canvas.getContext('2d');
-    
-    ctx.clearRect(0, 0, this.pieceSize, this.pieceSize);
-    ctx.drawImage(sprite, sx, sy, this.pieceSize,
-      this.pieceSize, 0, 0, this.pieceSize, this.pieceSize);
-  };
-
-  Proto.updateCover = function() {
-    if (this.x != this.rx || this.y != this.ry) {
-      this.showDefCover();
-    } else {
-      this.removeCover();
-    }
-  };
-
-  Proto.update = function() {
-    this.updateCover();
-    this.draw();
-  };
-
-  Proto.showTooltip = function(text) {
-    this.tooltip = document.createElement('span');
-    this.tooltip.innerHTML = sprintf('<i>%s</i>', text);
-    this.tooltip.classList.add('piece__tooltip');
-
-    this.tooltip.style.lineHeight = this.pieceSize + 'px';
-    this.tooltip.style.height = this.pieceSize + 'px';
-    this.tooltip.style.width = this.pieceSize + 'px';
-    this.tooltip.style.left = this.cx + 'px';
-    this.tooltip.style.top = this.cy + 'px';
-
-    this.el.parentNode.appendChild(this.tooltip);
-  };
-
-  Proto.removeTooltip = function() {
-    if (!this.tooltip) return;
-    this.el.parentNode.removeChild(this.tooltip);
-    this.tooltip = null;
-  };
-
-  Proto.showScore = function(score) {
-    var $el = $('<div class="piece__score">' + score + '</div>');
-    
-    $el.css({
-      'lineHeight' : this.pieceSize + 2 + 'px'
-    , 'height'     : this.pieceSize
-    , 'width'      : this.pieceSize
-    , 'left'       : this.cx
-    , 'top'        : this.cy
-    });
-
-    var css = {'font-size': 70, opacity: 0};
-
-    $el.appendTo(this.el.parentNode);
-    $el.transit(css, 600, 'ease-out', function() {
-      $el.remove();
-    });
-  };
-
   var COVERS_MAP = {
     '0000': {x: 0, y: 0}
   , '1111': {x: 1, y: 0}
@@ -137,44 +18,128 @@
   , '0101': {x: 3, y: 3}
   };
 
-  Proto.addCover = function() {
-    this.cover = document.createElement('canvas');
-    this.cover.classList.add('piece__cover');
-    this.cover.height = this.pieceSize;
-    this.cover.width = this.pieceSize;
-    this.el.appendChild(this.cover);
+  var EAR_T_VAL = 1  // 0001
+    , EAR_L_VAL = 2  // 0010
+    , EAR_B_VAL = 4  // 0100
+    , EAR_R_VAL = 8; // 1000
+
+  var EAR_T_MASK = 1  // 0001
+    , EAR_L_MASK = 2  // 0010
+    , EAR_B_MASK = 4  // 0100
+    , EAR_R_MASK = 8; // 1000
+
+  function Piece(op) {
+    this.index = op.index;
+
+    this.x = op.x;
+    this.y = op.y;
+
+    this.rx = op.rx;
+    this.ry = op.ry;
+
+    this.t = op.t;
+    this.b = op.b;
+    this.l = op.l;
+    this.r = op.r;
+    
+    this.canvas = op.canvas;
+    this.covers = op.covers;
+    this.sprites = op.sprites;
+    this.pieceSize = op.pieceSize;
+    this.spriteSize = op.spriteSize;
+
+    this.tileSize = Piece.calcTileSize(this.pieceSize);
+    this.stepSize = Piece.calcStepSize(this.pieceSize);
+
+    this.cx = this.x * (this.tileSize + 1);
+    this.cy = this.y * (this.tileSize + 1);
+
+    // flags
+    this.waiting = false;
+    this.selected = false;
+    this.blocked = false;
+
+    this.draw();
+  }
+
+  var Proto = Piece.prototype;
+
+  Proto.draw = function(canvas) {
+    this.drawPiece(canvas);
+
+    if (this.selected) {
+      this.drawCover('sel', canvas);
+    } else if (this.blocked) {
+      this.drawCover('loc', canvas);
+    } else if (this.x != this.rx || this.y != this.ry) {
+      this.drawCover('def', canvas);
+    }
   };
 
-  Proto.showCover = function(type) {
-    if (!this.cover) this.addCover();
+  Proto.drawPiece = function(canvas) {
+    canvas || (canvas = this.canvas);
 
-    var ctx = this.cover.getContext('2d');
+    var ctx = canvas.getContext('2d');
+    var spriteX = ~~(this.rx / this.spriteSize);
+    var spriteY = ~~(this.ry / this.spriteSize);
+    var sprite = this.sprites[spriteX][spriteY];
+
+    var sx = this.rx % this.spriteSize * this.pieceSize;
+    var sy = this.ry % this.spriteSize * this.pieceSize;
+    
+    ctx.drawImage(sprite, sx, sy, this.pieceSize, this.pieceSize,
+      this.cx, this.cy, this.pieceSize, this.pieceSize);
+  };
+
+  Proto.drawCover = function(type, canvas) {
+    canvas || (canvas = this.canvas);
+
+    var ctx = canvas.getContext('2d');
     var coords = COVERS_MAP[this.shapeKey()];
     var sx = coords.x * this.pieceSize;
     var sy = coords.y * this.pieceSize;
     
-    ctx.clearRect(0, 0, this.pieceSize, this.pieceSize);
-    ctx.drawImage(this.covers[type], sx, sy, this.pieceSize,
-      this.pieceSize, 0, 0, this.pieceSize, this.pieceSize);
+    ctx.drawImage(this.covers[type], sx, sy, this.pieceSize, this.pieceSize,
+      this.cx, this.cy, this.pieceSize, this.pieceSize);
   };
 
-  Proto.removeCover = function() {
-    if (this.cover) {
-      this.el.removeChild(this.cover);
-      this.cover = null;
-    }
+  Proto.showTooltip = function(text) {
+    this.$tooltip = $('<span class="piece__tooltip"><i>' + text + '</i></span>');
+
+    this.$tooltip.css({
+      'lineHeight' : this.pieceSize + 'px'
+    , 'height'     : this.pieceSize
+    , 'width'      : this.pieceSize
+    , 'left'       : this.cx
+    , 'top'        : this.cy
+    });
+
+    this.$tooltip.insertAfter(this.canvas);
   };
 
-  Proto.showDefCover = function() {
-    this.showCover('def');
+  Proto.removeTooltip = function() {
+    if (!this.$tooltip) return;
+    this.$tooltip.remove();
+    this.$tooltip = null;
   };
 
-  Proto.showSelCover = function() {
-    this.showCover('sel');
-  };
-  
-  Proto.showLocCover = function() {
-    this.showCover('loc');
+  Proto.showScore = function(score) {
+    var $score = $('<div class="piece__score">' + score + '</div>');
+    
+    $score.css({
+      'lineHeight' : this.pieceSize + 2 + 'px'
+    , 'height'     : this.pieceSize
+    , 'width'      : this.pieceSize
+    , 'left'       : this.cx
+    , 'top'        : this.cy
+    });
+
+    var css = {'font-size': 70, opacity: 0};
+
+    $score.insertAfter(this.canvas);
+    $score.transit(css, 600, 'ease-out', function() {
+      $score.remove();
+    });
   };
 
   Proto.shapeKey = function() {
@@ -204,7 +169,7 @@
   };
 
   Proto.isActive = function() {
-    return !!!(this.x == this.rx && this.y == this.ry);
+    return !(this.x == this.rx && this.y == this.ry);
   };
 
   Proto.isSelected = function() {
@@ -217,21 +182,24 @@
 
   Proto.setWaiting = function() {
     if (this.waiting) return;
-    this.spinner = document.createElement('div');
-    this.spinner.classList.add('piece__spinner');
-    this.el.appendChild(this.spinner);
+    this.$spinner = $('<div class="piece__spinner"></div>');
+    this.$spinner.css({
+      'left' : this.cx + this.pieceSize / 2 - 9
+    , 'top'  : this.cy + this.pieceSize / 2 - 2
+    });
+    this.$spinner.insertAfter(this.canvas);
     this.waiting = true;
   };
 
   Proto.unsetWaiting = function() {
     if (!this.waiting) return;
-    this.el.removeChild(this.spinner);
+    this.$spinner.remove();
+    this.$spinner = null;
     this.waiting = false;
   };
 
   Proto.setSelected = function() {
     if (this.waiting) return;
-    this.showSelCover();
     this.selected = true;
     this.cursor = this.addCursor();
   };
@@ -242,7 +210,6 @@
       this.cursor.remove();
       this.cursor = null;
     }
-    this.updateCover();
     this.selected = false;
   };
 
@@ -251,7 +218,6 @@
     if (data.userName) {
       this.showTooltip(data.userName)
     }
-    this.showLocCover();
     this.blocked = true;
     this.cursor = this.addCursor();
   };
@@ -261,7 +227,6 @@
       this.cursor.remove();
       this.cursor = null;
     }
-    this.updateCover();
     this.removeTooltip();
     this.blocked = false;
   };
@@ -277,10 +242,10 @@
       color: color
     , tileSize: this.tileSize
     , stepSize: this.stepSize
-    , body: this.el.parentNode
     });
     cursor.show();
     cursor.move(this.x, this.y);
+    cursor.$el.insertAfter(this.canvas);
     return cursor;
   };
 
@@ -302,16 +267,6 @@
   Piece.origin = function(value) {
     return value >> 4;
   };
-
-  var EAR_T_VAL = 1  // 0001
-    , EAR_L_VAL = 2  // 0010
-    , EAR_B_VAL = 4  // 0100
-    , EAR_R_VAL = 8; // 1000
-
-  var EAR_T_MASK = 1  // 0001
-    , EAR_L_MASK = 2  // 0010
-    , EAR_B_MASK = 4  // 0100
-    , EAR_R_MASK = 8; // 1000
 
   Piece.earT = function(value) {
     return (value & EAR_T_MASK) == EAR_T_VAL;

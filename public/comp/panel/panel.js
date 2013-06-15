@@ -55,12 +55,12 @@
       this.ui.info.html(this.tpl(boardData));
 
       if (!localStorage.getItem('panel__about_visited')) {
-        this.ui.btnAbout.addClass('panel__btn_blink');
+        this.ui.btnAbout.addClass('panel__btn_hlght');
       }
     },
 
     showAbout: function() {
-      this.ui.btnAbout.removeClass('panel__btn_blink');
+      this.ui.btnAbout.removeClass('panel__btn_hlght');
       localStorage.setItem('panel__about_visited', 'yes');
       var dialog = new ns.Comp.Dialog({el: $('.about')});
       dialog.open();

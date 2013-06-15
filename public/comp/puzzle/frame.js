@@ -1,70 +1,52 @@
 (function() {
   function Frame(op) {
-    this.$body = op.body;
+    this.op = op;
     this.image = op.image;
-    // just an empty canvas to clone
-    this.base = document.createElement('canvas');
-    this.base.classList.add('puzzle__frame');
+
+    this.canvas = document.createElement('canvas');
+    this.canvas.classList.add('puzzle__frame');
+    this.canvas.height = (op.tileSize + 1) * op.lenVer + op.stepSize * 2 + (FRAME_SIZE + 1) * 2;
+    this.canvas.width = (op.tileSize + 1) * op.lenHor + op.stepSize * 2 + (FRAME_SIZE + 1) * 2;
+    this.canvas.style.left = this.canvas.style.top = -(FRAME_SIZE + 1) + 'px';
   }
 
   var Proto = Frame.prototype;
 
-  Proto.render = function(op) {
-    var frag = document.createDocumentFragment();
+  Proto.render = function() {
+    var op = this.op;
+    var ctx = this.canvas.getContext('2d');
     var frameSize = op.stepSize * 2 + FRAME_SIZE;    
-    var ft, fb, fl, fr, et, eb, el, er;
+    var et, eb, el, er, dx, dy;
+
+    var dy1 = op.lenVer * (op.tileSize + 1) + FRAME_SIZE + 1;
+    var dy2 = 0;
 
     for (var x = 0; x < op.lenHor; x++) {
-      ft = this.base.cloneNode();
-      fb = this.base.cloneNode();
-      
       et = op.pieces[x][0].t;
       eb = op.pieces[x][op.lenVer - 1].b;
       
-      ft.style.left = 
-      fb.style.left = op.stepSize + x * (op.tileSize + 1) + 'px';
-      fb.style.top = op.lenVer * (op.tileSize + 1) + 'px';
-      ft.style.top = -FRAME_SIZE - 1 + 'px';
+      dx = op.stepSize + x * (op.tileSize + 1) + FRAME_SIZE + 1;
 
-      ft.width = fb.width = op.tileSize;
-      ft.height = fb.height = frameSize;
-      
-      this.drawPiece(ft, 0, et ? frameSize * 3 : frameSize);
-      this.drawPiece(fb, 0, eb ? frameSize * 2 : 0);
-
-      frag.appendChild(ft);
-      frag.appendChild(fb);
+      ctx.drawImage(this.image, 0, eb ? frameSize * 2 : 0,
+        op.tileSize, frameSize, dx, dy1, op.tileSize, frameSize);
+      ctx.drawImage(this.image, 0, et ? frameSize * 3 : frameSize,
+        op.tileSize, frameSize, dx, dy2, op.tileSize, frameSize);
     }
 
+    var dx1 = op.lenHor * (op.tileSize + 1) + FRAME_SIZE + 1;
+    var dx2 = 0;
+
     for (var y = 0; y < op.lenVer; y++) {
-      fl = this.base.cloneNode();
-      fr = this.base.cloneNode();
-      
       el = op.pieces[0][y].l;
       er = op.pieces[op.lenHor - 1][y].r;
       
-      fl.style.top = 
-      fr.style.top = op.stepSize + y * (op.tileSize + 1) + 'px';
-      fr.style.left = op.lenHor * (op.tileSize + 1) + 'px';
-      fl.style.left = -FRAME_SIZE - 1 + 'px';
+      dy = op.stepSize + y * (op.tileSize + 1) + FRAME_SIZE + 1;
 
-      fl.width = fr.width = frameSize;
-      fl.height = fr.height = op.tileSize;
-      
-      this.drawPiece(fl, op.tileSize + frameSize, el ? op.tileSize : 0);
-      this.drawPiece(fr, op.tileSize, er ? op.tileSize : 0);
-
-      frag.appendChild(fl);
-      frag.appendChild(fr);
+      ctx.drawImage(this.image, op.tileSize, er ? op.tileSize : 0,
+        frameSize, op.tileSize, dx1, dy, frameSize, op.tileSize);
+      ctx.drawImage(this.image, op.tileSize + frameSize, el ? op.tileSize : 0,
+        frameSize, op.tileSize, dx2, dy, frameSize, op.tileSize);
     }
-  
-    this.$body.append(frag);
-  };
-
-  Proto.drawPiece = function(canvas, sx, sy) {
-    var ctx = canvas.getContext('2d');
-    ctx.drawImage(this.image, sx, sy, canvas.width, canvas.height,
-      0, 0, canvas.width, canvas.height);
   };
 
   ns.Comp.Frame = Frame;

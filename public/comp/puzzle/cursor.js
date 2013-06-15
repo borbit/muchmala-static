@@ -1,11 +1,5 @@
 (function() {
   function Cursor(op) {
-    if (op.body.jQuery) {
-      this.$body = op.body;
-    } else {
-      this.$body = $(op.body);
-    }
-
     this.color = op.color;
     this.tileSize = op.tileSize;
     this.stepSize = op.stepSize;
@@ -16,7 +10,6 @@
 
   Proto.render = function() {
     this.$el = $('<div></div>');
-    this.$el.appendTo(this.$body);
     this.$el.addClass('cursor');
     this.$el.css({
       background: this.color

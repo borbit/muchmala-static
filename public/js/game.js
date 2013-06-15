@@ -35,6 +35,7 @@
       self.trigger('release', data);
     });
     this.socket.on('swap', function(data) {
+      self.puzzle.set(data.puzzle);
       self.trigger('swap', data.swap);
     });
   };

@@ -23,6 +23,7 @@
     this.data = {};
     this.pieces = {};
     this.timers = {};
+    this.canvas = null;
     this.spritesImgs = {};
     this.coversImgs = null;
     this.selected = null;
@@ -48,8 +49,9 @@
     });
 
     this.loader.once('sprite:finish', function() {
-      self.loader.loadFrame(data);
       self.loader.off('sprite');
+      self.loader.loadFrame(data);
+      self.game.trigger('puzzle:load');
     });
     
     this.loader.once('covers', function(covers) {
@@ -58,11 +60,21 @@
     });
 
     this.loader.once('frame', function(frame) {
-      self.frame = new ns.Comp.Frame({body: self.$cont, image: frame});
+      var frame = new ns.Comp.Frame({
+        image: frame
+      , stepSize: self.stepSize
+      , tileSize: self.tileSize
+      , lenHor: self.data.lenHor
+      , lenVer: self.data.lenVer
+      , canvas: self.canvas
+      , pieces: self.pieces
+      });
+      frame.render();
+      
+      self.$cont.append(frame.canvas);
       self.game.getPuzzle(self.data.id);
       self.game.trigger('puzzle:load');
       self.enableDOMEvents();
-      self.renderFrame();
     });
 
     this.data = data;
@@ -71,13 +83,22 @@
     
     this.tileSize = ns.Comp.Piece.calcTileSize(data.pieceSize);
     this.stepSize = ns.Comp.Piece.calcStepSize(data.pieceSize);
+
+    this.canvas = document.createElement('canvas');
+    this.canvas.classList.add('puzzle__pieces');
     this.cursor = new ns.Comp.Cursor({
       tileSize: this.tileSize
     , stepSize: this.stepSize
     , body: this.$cont
     });
 
-    this.arrangeContSize();
+    var size = this.getViewportSize();
+    this.canvas.height = size.height;
+    this.canvas.width = size.width;
+
+    this.$cont.css({height: size.height, width: size.width});
+    this.$cont.append(this.cursor.$el);
+    this.$cont.append(this.canvas);
     this.arrangeContPos();
   };
 
@@ -93,10 +114,11 @@
       if (piece.rx != rc.x || piece.ry != rc.y) {
         piece.rx = rc.x;
         piece.ry = rc.y;
-        piece.update();
+        self.updatePiece(piece);
       }
-      
-      piece.clear();
+
+      piece.isSelected() && self.releasePiece(piece);
+      piece.isBlocked() && self.unblockPiece(piece);
 
       var selData = self.data.selected[i];
 
@@ -110,11 +132,11 @@
     });
   };
 
-  Proto.arrangeContSize = function() {
-    this.$cont.css({
+  Proto.getViewportSize = function() {
+    return {
       height : (this.tileSize + 1) * this.data.lenVer + this.stepSize * 2
     , width  : (this.tileSize + 1) * this.data.lenHor + this.stepSize * 2
-    });
+    };
   };
 
   Proto.arrangeContDelta = function(delta) {
@@ -180,7 +202,7 @@
       }
     });
 
-    this.$cont.bind('click', function(e) {
+    this.$cont.bind('click tap', function(e) {
       var piece = self.findPiece(e.clientX, e.clientY);
 
       if (!piece || !piece.isActive() || piece.isBlocked() || self.waiting)
@@ -279,7 +301,9 @@
 
   Proto.selectPiece = function(piece, data) {
     piece.unsetWaiting();
-    piece.setSelected(data);
+    piece.setSelected();
+    
+    this.updatePiece(piece);
     this.setFavicon(piece.shapeKey());
     this.selected = piece;
 
@@ -298,6 +322,7 @@
     }
     piece.unsetWaiting();
     piece.unsetSelected();
+    this.updatePiece(piece);
     this.selected = null;
     this.clearFavicon();
   };
@@ -305,6 +330,7 @@
   Proto.blockPiece = function(piece, data) {
     piece.unsetWaiting();
     piece.setBlocked(data);
+    this.updatePiece(piece);
 
     var self = this;
     this.timers[piece.x] || (this.timers[piece.x] = {});
@@ -321,6 +347,7 @@
     }
     piece.unsetWaiting();
     piece.unsetBlocked();
+    this.updatePiece(piece);
   };
 
   Proto.findPiece = function(ex, ey) {
@@ -349,9 +376,6 @@
     var y2 = y1 + this.data.spriteSize;
     var self = this;
 
-    // just to speed up appending a bit
-    var frag = document.createDocumentFragment()
-
     _.each(this.data.pieces, function(val, i) {
       var rc = self.getPieceRCoords(val);
 
@@ -372,15 +396,13 @@
         , spriteSize: self.data.spriteSize
         , sprites: self.spritesImgs
         , covers: self.coversImgs
+        , canvas: self.canvas
         });
 
         self.pieces[c.x] || (self.pieces[c.x] = {});
         self.pieces[c.x][c.y] = piece;
-        frag.appendChild(piece.el);
       }
     });
-
-    this.$cont.append(frag);
   };
 
   Proto.swapPieces = function(pieces) {
@@ -392,14 +414,39 @@
 
       piece.rx = rc.x;
       piece.ry = rc.y;
-
-      if (self.timers[piece.x] && self.timers[piece.x][piece.y]) {
-        clearTimeout(self.timers[piece.x][piece.y]);
-        delete self.timers[piece.x][piece.y];
+      piece.unsetWaiting();
+      
+      if (piece.isSelected()) {
+        self.releasePiece(piece);
+      } else if (piece.isBlocked()) {
+        self.unblockPiece(piece);
+      } else {
+        self.updatePiece(piece);
       }
-      piece.update();
-      piece.clear();
     });
+  };
+
+  Proto.updatePiece = function(piece) {
+    var canvas = document.createElement('canvas');
+    var size = this.getViewportSize();
+
+    canvas.height = size.height;
+    canvas.width = size.width;
+
+    var x1 = Math.max(0, piece.x - 1);
+    var y1 = Math.max(0, piece.y - 1);
+    var x2 = Math.min(this.data.lenHor - 1, piece.x + 1);
+    var y2 = Math.min(this.data.lenVer - 1, piece.y + 1);
+
+    for (var x = x1; x <= x2; x++) {
+    for (var y = y1; y <= y2; y++) {
+      this.pieces[x][y].draw(canvas);
+    }}
+
+    var ctx = this.canvas.getContext('2d');
+    ctx.clearRect(piece.cx, piece.cy, this.data.pieceSize, this.data.pieceSize);
+    ctx.drawImage(canvas, piece.cx, piece.cy, this.data.pieceSize, this.data.pieceSize,
+      piece.cx, piece.cy, this.data.pieceSize, this.data.pieceSize);
   };
 
   Proto.showScore = function(score) {
@@ -424,16 +471,6 @@
       x: ~~(org % this.data.lenHor)
     , y: ~~(org / this.data.lenHor)
     };
-  };
-
-  Proto.renderFrame = function() {
-    this.frame.render({
-      stepSize: this.stepSize
-    , tileSize: this.tileSize
-    , lenHor: this.data.lenHor
-    , lenVer: this.data.lenVer
-    , pieces: this.pieces
-    });
   };
 
   Proto.setFavicon = function(name) {

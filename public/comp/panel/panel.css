@@ -94,40 +94,6 @@
   background-color: #333;
 }
 
-.panel__btn_blink {
-  -webkit-animation: blink 2s infinite;
-     -moz-animation: blink 2s infinite;
-      -ms-animation: blink 2s infinite;
-       -o-animation: blink 2s infinite;
-          animation: blink 2s infinite;
-}
-
-@keyframes blink {
-  0%   { background-color: #333; }
-  50%  { background-color: #888; }
-  100% { background-color: #333; }
-}
-
-@-webkit-keyframes blink {
-  0%   { background-color: #333; }
-  50%  { background-color: #888; }
-  100% { background-color: #333; }
-}
-
-@-moz-keyframes blink {
-  0%   { background-color: #333; }
-  50%  { background-color: #888; }
-  100% { background-color: #333; }
-}
-
-@-ms-keyframes blink {
-  0%   { background-color: #333; }
-  50%  { background-color: #888; }
-  100% { background-color: #333; }
-}
-
-@-o-keyframes blink {
-  0%   { background-color: #333; }
-  50%  { background-color: #888; }
-  100% { background-color: #333; }
+.panel__btn_hlght {
+  background-color: #b00;
 }

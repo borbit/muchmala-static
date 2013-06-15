@@ -1,15 +1,6 @@
-.piece {
-  position: absolute;
-
-  -webkit-backface-visibility: hidden;
-}
-
 .piece__spinner {
   position: absolute;
   z-index: 1;
-  left: 50%;
-  top: 50%;
-  margin: -2px 0 0 -9px;
   height: 4px;
   width: 18px;
   
