@@ -42,6 +42,7 @@
     this.l = op.l;
     this.r = op.r;
     
+    this.ctx = op.ctx;
     this.canvas = op.canvas;
     this.covers = op.covers;
     this.sprites = op.sprites;
@@ -64,22 +65,20 @@
 
   var Proto = Piece.prototype;
 
-  Proto.draw = function(canvas) {
-    this.drawPiece(canvas);
+  Proto.draw = function(ctx) {
+    this.drawPiece(ctx);
 
     if (this.selected) {
-      this.drawCover('sel', canvas);
+      this.drawCover('sel', ctx);
     } else if (this.blocked) {
-      this.drawCover('loc', canvas);
+      this.drawCover('loc', ctx);
     } else if (this.x != this.rx || this.y != this.ry) {
-      this.drawCover('def', canvas);
+      this.drawCover('def', ctx);
     }
   };
 
-  Proto.drawPiece = function(canvas) {
-    canvas || (canvas = this.canvas);
-
-    var ctx = canvas.getContext('2d');
+  Proto.drawPiece = function(ctx) {
+    ctx || (ctx = this.ctx);
     var spriteX = ~~(this.rx / this.spriteSize);
     var spriteY = ~~(this.ry / this.spriteSize);
     var sprite = this.sprites[spriteX][spriteY];
@@ -91,10 +90,8 @@
       this.cx, this.cy, this.pieceSize, this.pieceSize);
   };
 
-  Proto.drawCover = function(type, canvas) {
-    canvas || (canvas = this.canvas);
-
-    var ctx = canvas.getContext('2d');
+  Proto.drawCover = function(type, ctx) {
+    ctx || (ctx = this.ctx);
     var coords = COVERS_MAP[this.shapeKey()];
     var sx = coords.x * this.pieceSize;
     var sy = coords.y * this.pieceSize;

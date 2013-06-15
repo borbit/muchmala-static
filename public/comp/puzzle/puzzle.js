@@ -86,6 +86,8 @@
 
     this.canvas = document.createElement('canvas');
     this.canvas.classList.add('puzzle__pieces');
+    this.ctx = this.canvas.getContext('2d');
+
     this.cursor = new ns.Comp.Cursor({
       tileSize: this.tileSize
     , stepSize: this.stepSize
@@ -397,6 +399,7 @@
         , sprites: self.spritesImgs
         , covers: self.coversImgs
         , canvas: self.canvas
+        , ctx: self.ctx
         });
 
         self.pieces[c.x] || (self.pieces[c.x] = {});
@@ -429,6 +432,7 @@
   Proto.updatePiece = function(piece) {
     var canvas = document.createElement('canvas');
     var size = this.getViewportSize();
+    var ctx = canvas.getContext('2d');
 
     canvas.height = size.height;
     canvas.width = size.width;
@@ -440,13 +444,13 @@
 
     for (var x = x1; x <= x2; x++) {
     for (var y = y1; y <= y2; y++) {
-      this.pieces[x][y].draw(canvas);
+      this.pieces[x][y].draw(ctx);
     }}
-
-    var ctx = this.canvas.getContext('2d');
-    ctx.clearRect(piece.cx, piece.cy, this.data.pieceSize, this.data.pieceSize);
-    ctx.drawImage(canvas, piece.cx, piece.cy, this.data.pieceSize, this.data.pieceSize,
+    
+    this.ctx.clearRect(piece.cx, piece.cy, this.data.pieceSize, this.data.pieceSize);
+    this.ctx.drawImage(canvas, piece.cx, piece.cy, this.data.pieceSize, this.data.pieceSize,
       piece.cx, piece.cy, this.data.pieceSize, this.data.pieceSize);
+
   };
 
   Proto.showScore = function(score) {
