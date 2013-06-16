@@ -24,7 +24,7 @@
 
     _.each(_.range(0, lh), function(x) {
     _.each(_.range(0, lv), function(y) {
-      var src = sprintf('/%s/%d_%d_pieces.png', data.id, x, y);
+      var src = sprintf('/puzzles/%s/%d_%d_pieces.png', data.id, x, y);
       self.image(src, function(image) {
         self.trigger('sprite', x, y, image);
         finish();
