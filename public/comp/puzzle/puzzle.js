@@ -399,6 +399,7 @@
 
         self.pieces[c.x] || (self.pieces[c.x] = {});
         self.pieces[c.x][c.y] = piece;
+        piece.draw();
       }
     });
   };
@@ -434,42 +435,44 @@
   };
 
   Proto.updatePiece = function(piece) {
-    var canvas = document.createElement('canvas');
-    var size = this.getViewportSize();
-    var ctx = canvas.getContext('2d');
+    var self = this;
 
-    canvas.height = (this.tileSize + 1) * 3 + this.stepSize * 2;
-    canvas.width  = (this.tileSize + 1) * 3 + this.stepSize * 2;
+    ns.utils.requestAnimationFrame(function() {
+      var x1 = Math.max(0, piece.x - 1);
+      var y1 = Math.max(0, piece.y - 1);
+      var x2 = Math.min(self.data.lenHor - 1, piece.x + 1);
+      var y2 = Math.min(self.data.lenVer - 1, piece.y + 1);
 
-    var x1 = Math.max(0, piece.x - 1);
-    var y1 = Math.max(0, piece.y - 1);
-    var x2 = Math.min(this.data.lenHor - 1, piece.x + 1);
-    var y2 = Math.min(this.data.lenVer - 1, piece.y + 1);
-
-    var first = this.pieces[x1][y1];
-    var clone, exist;
-
-    for (var x = x1; x <= x2; x++) {
-    for (var y = y1; y <= y2; y++) {
-      exist = this.pieces[x][y];
-      clone = this.createPiece({
-        x: x, y: y
-      , rx: exist.rx, ry: exist.ry
-      , t: exist.t, b: exist.b
-      , l: exist.l, r: exist.r
-      , ctx: ctx
-      });
+      var first = self.pieces[x1][y1];
+      var clone, exist;
       
-      clone.cx -= (this.tileSize + 1) * first.x;
-      clone.cy -= (this.tileSize + 1) * first.y;
-      clone.selected = exist.selected;
-      clone.blocked = exist.blocked;
-      clone.draw();
-    }}
-    
-    this.ctx.clearRect(piece.cx, piece.cy, this.data.pieceSize, this.data.pieceSize);
-    this.ctx.drawImage(canvas, this.tileSize+1, this.tileSize+1, this.data.pieceSize,
-      this.data.pieceSize, piece.cx, piece.cy, this.data.pieceSize, this.data.pieceSize);
+      var canvas = document.createElement('canvas');
+      canvas.height = (self.tileSize + 1) * 3 + self.stepSize * 2;
+      canvas.width = (self.tileSize + 1) * 3 + self.stepSize * 2;
+      var ctx = canvas.getContext('2d');
+
+      for (var x = x1; x <= x2; x++) {
+      for (var y = y1; y <= y2; y++) {
+        exist = self.pieces[x][y];
+        clone = self.createPiece({
+          x: x, y: y
+        , rx: exist.rx, ry: exist.ry
+        , t: exist.t, b: exist.b
+        , l: exist.l, r: exist.r
+        , ctx: ctx
+        });
+
+        clone.cx -= first.cx;
+        clone.cy -= first.cy;
+        clone.selected = exist.selected;
+        clone.blocked = exist.blocked;
+        clone.draw();
+      }}
+      
+      self.ctx.clearRect(piece.cx, piece.cy, self.data.pieceSize, self.data.pieceSize);
+      self.ctx.drawImage(canvas, piece.cx-first.cx, piece.cy-first.cy, self.data.pieceSize,
+        self.data.pieceSize, piece.cx, piece.cy, self.data.pieceSize, self.data.pieceSize);
+    });
   };
 
   Proto.showScore = function(score) {

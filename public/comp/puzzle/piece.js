@@ -59,8 +59,6 @@
     this.waiting = false;
     this.selected = false;
     this.blocked = false;
-
-    this.draw();
   }
 
   var Proto = Piece.prototype;

@@ -127,3 +127,10 @@
 .about__links {
   font-size: 16px;
 }
+
+.about__like {
+  padding: 20px 0;
+  background: #FFF4B8;
+  border: 2px dashed #333;
+  border-radius: 2px;
+}
