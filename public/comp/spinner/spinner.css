@@ -1,0 +1,11 @@
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -5px 0 0 -25px;
+  height: 10px;
+  width: 50px;
+
+  background: no-repeat center;
+  background-image: url("/comp/spinner/img/spinner.gif?embed");
+}

@@ -52,5 +52,12 @@ $.event.special.drag.defaults.relative = true;
     });
   });
 
+  game.on('puzzle:loading', function() {
+    $('.spinner').show();
+  });
+  game.on('puzzle:load', function() {
+    $('.spinner').hide();
+  });
+
   game.connect();
 })();
