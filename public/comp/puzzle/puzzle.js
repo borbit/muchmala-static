@@ -50,12 +50,17 @@
 
     this.loader.once('sprite:finish', function() {
       self.loader.off('sprite');
-      
-      self.frame.render();
-      self.$cont.append(self.frame.canvas);
-      self.game.getPuzzle(self.data.id);
-      self.game.trigger('puzzle:load');
-      self.enableDOMEvents();
+
+      setTimeout(function finish() {
+        if (!self.coversImgs || !self.frame) {
+          return setTimeout(finish, 50);
+        }
+        self.frame.render();
+        self.$cont.append(self.frame.canvas);
+        self.game.getPuzzle(self.data.id);
+        self.game.trigger('puzzle:load');
+        self.enableDOMEvents();
+      }, 50);
     });
     
     this.loader.once('covers', function(covers) {
