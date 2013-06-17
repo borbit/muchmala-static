@@ -23,6 +23,7 @@
   "/comp/panel/panel.js",
   "/comp/popup/popup.js",
   "/comp/popup/popups.js",
+  "/js/detect.js",
   "/js/router.js",
   "/js/loader.js",
   "/js/texts.js",

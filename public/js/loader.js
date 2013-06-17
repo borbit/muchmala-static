@@ -7,7 +7,7 @@
 
   Proto.image = function(src, cb) {
     var image = document.createElement('img');
-    image.src = this.host + src;
+    image.src = this.host + src + (ns.detect.webp ? '.webp' : '.png');
     image.onload = function() {
       cb(image);
     };
@@ -24,7 +24,7 @@
 
     _.each(_.range(0, lh), function(x) {
     _.each(_.range(0, lv), function(y) {
-      var src = sprintf('/puzzles/%s/%d_%d_pieces.png', data.id, x, y);
+      var src = sprintf('/puzzles/%s/%d_%d_pieces', data.id, x, y);
       self.image(src, function(image) {
         self.trigger('sprite', x, y, image);
         finish();
@@ -42,7 +42,7 @@
 
     var self = this;
     _.each(types, function(type) {
-      var src = sprintf('/covers/%d/%s_covers.png', data.pieceSize, type);
+      var src = sprintf('/covers/%d/%s_covers', data.pieceSize, type);
       self.image(src, function(image) {
         covers[type] = image;
         cb();
@@ -52,7 +52,7 @@
 
   Proto.loadFrame = function(data) {
     var self = this;
-    var src = sprintf('/frames/%d/frame.png', data.pieceSize);
+    var src = sprintf('/frames/%d/frame', data.pieceSize);
     this.image(src, function(image) {
       self.trigger('frame', image);
     });
