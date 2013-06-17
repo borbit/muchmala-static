@@ -28,7 +28,7 @@
     this.coversImgs = null;
     this.selected = null;
     this.cursor = null;
-    this.frame = null
+    this.frame = null;
     
     this.waiting = false;
     this.contMoved = false;
@@ -50,17 +50,20 @@
 
     this.loader.once('sprite:finish', function() {
       self.loader.off('sprite');
-      self.loader.loadFrame(data);
+      
+      self.frame.render();
+      self.$cont.append(self.frame.canvas);
+      self.game.getPuzzle(self.data.id);
       self.game.trigger('puzzle:load');
+      self.enableDOMEvents();
     });
     
     this.loader.once('covers', function(covers) {
-      self.loader.loadSprites(data);
       self.coversImgs = covers;
     });
 
     this.loader.once('frame', function(frame) {
-      var frame = new ns.Comp.Frame({
+      self.frame = new ns.Comp.Frame({
         image: frame
       , stepSize: self.stepSize
       , tileSize: self.tileSize
@@ -69,16 +72,12 @@
       , canvas: self.canvas
       , pieces: self.pieces
       });
-      frame.render();
-      
-      self.$cont.append(frame.canvas);
-      self.game.getPuzzle(self.data.id);
-      self.game.trigger('puzzle:load');
-      self.enableDOMEvents();
     });
 
     this.data = data;
     this.loader.loadCovers(data);
+    this.loader.loadSprites(data);
+    this.loader.loadFrame(data);
     this.game.trigger('puzzle:loading');
     
     this.tileSize = ns.Comp.Piece.calcTileSize(data.pieceSize);
@@ -372,11 +371,18 @@
   };
 
   Proto.showPieces = function(sx, sy) {
+    var self = this;
+
+    if (!this.coversImgs) {
+      return setTimeout(function() {
+        self.showPieces(sx, sy);
+      }, 50);
+    }
+
     var x1 = sx * this.data.spriteSize;
     var y1 = sy * this.data.spriteSize;
     var x2 = x1 + this.data.spriteSize;
     var y2 = y1 + this.data.spriteSize;
-    var self = this;
 
     _.each(this.data.pieces, function(val, i) {
       var rc = self.getPieceRCoords(val);
